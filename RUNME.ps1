@@ -1,3 +1,4 @@
+$DotNetExecutablePath = "C:\Program Files\dotnet\dotnet.exe"
 $GitExecutablePath = "C:\Program Files\Git\bin\git.exe"
 $DockerExecutablePath = "C:\Program Files\Docker\Docker\resources\bin\docker.exe"
 
@@ -27,4 +28,35 @@ if (!(Test-Path $ContainerRegistryAndPackageManagerPath)) {
 Set-Location $ContainerRegistryAndPackageManagerPath
 Start-Process -FilePath $DockerExecutablePath -ArgumentList "compose", "up"
 
+Start-Process -Wait $DotNetExecutablePath -ArgumentList "nuget", "add", "source", "http://localhost:19002/v3/index.json", "--name baget"
+
 Set-Location $RootFolder
+
+Write-Host "Installing clean-arch template"
+
+Start-Process -Wait $DotNetExecutablePath -ArgumentList "new", "install", "Ardalis.CleanArchitecture.Template"
+
+$SystemRootFolder = "$RootFolder\System"
+Write-Host "SystemRootFolder: $SystemRootFolder"
+
+if (!(Test-Path $SystemRootFolder)) {
+    New-Item $SystemRootFolder -ItemType Directory
+}
+
+Set-Location $SystemRootFolder 
+
+$WhiteLabelAspireFolder = "$SystemRootFolder\WhiteLabel.Aspire"
+Write-Host "WhiteLabelAspireFolder: $WhiteLabelAspireFolder"
+
+if (!(Test-Path $WhiteLabelAspireFolder)) {
+    Start-Process -Wait $DotNetExecutablePath -ArgumentList "new", "aspire", "-o WhiteLabel.Aspire"
+}
+
+
+
+
+
+
+
+
+
