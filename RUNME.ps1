@@ -1,3 +1,6 @@
+param([String]$n = "WhiteLabel")
+$ProjectName = $n
+
 $DotNetExecutablePath = "C:\Program Files\dotnet\dotnet.exe"
 $GitExecutablePath = "C:\Program Files\Git\bin\git.exe"
 $DockerExecutablePath = "C:\Program Files\Docker\Docker\resources\bin\docker.exe"
@@ -8,17 +11,17 @@ $RootFolder = Get-Location
 
 Write-Host "RootFolder.Path: $RootFolder"
 
-$WhiteLabelFolderPath = $RootFolder.Path + "\WhiteLabel"
+$ProjectFolderPath = $RootFolder.Path + "\$projectName"
 
-Write-Host "WhiteLabelFolderPath: $WhiteLabelFolderPath"
+Write-Host "WhiteLabelFolderPath: $ProjectFolderPath"
 
-if (!(Test-Path $WhiteLabelFolderPath)) {
-    New-Item $WhiteLabelFolderPath -ItemType Directory
+if (!(Test-Path $ProjectFolderPath)) {
+    New-Item $ProjectFolderPath -ItemType Directory
 }
 
-Set-Location $WhiteLabelFolderPath
+Set-Location $ProjectFolderPath
 
-$ContainerRegistryAndPackageManagerPath = "$WhiteLabelFolderPath\white-label.infrastructure.local-containers-and-packages"
+$ContainerRegistryAndPackageManagerPath = "$ProjectFolderPath\white-label.infrastructure.local-containers-and-packages"
 Write-Host "ContainerRegistryAndPackageManagerPath: $ContainerRegistryAndPackageManagerPath"
 
 if (!(Test-Path $ContainerRegistryAndPackageManagerPath)) {
@@ -45,11 +48,12 @@ if (!(Test-Path $SystemRootFolder)) {
 
 Set-Location $SystemRootFolder 
 
-$WhiteLabelAspireFolder = "$SystemRootFolder\WhiteLabel.Aspire"
-Write-Host "WhiteLabelAspireFolder: $WhiteLabelAspireFolder"
+$ProjectAspire = "$ProjectName.Aspire"
+$ProjectAspireFolder = "$SystemRootFolder\$ProjectAspire"
+Write-Host "ProjectAspireFolder: $ProjectAspireFolder"
 
-if (!(Test-Path $WhiteLabelAspireFolder)) {
-    Start-Process -Wait $DotNetExecutablePath -ArgumentList "new", "aspire", "-o WhiteLabel.Aspire"
+if (!(Test-Path $ProjectAspireFolder)) {
+    Start-Process -Wait $DotNetExecutablePath -ArgumentList "new", "aspire", "-o $ProjectAspire"
 }
 
 
