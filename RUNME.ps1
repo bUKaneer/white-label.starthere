@@ -19,11 +19,11 @@ $ContainerRegistryAndPackageManagerPath = "$WhiteLabelFolderPath\white-label.inf
 Write-Host "ContainerRegistryAndPackageManagerPath: $ContainerRegistryAndPackageManagerPath"
 
 if (!(Test-Path $ContainerRegistryAndPackageManagerPath)) {
-    Start-Process -FilePath $GitExecutablePath -ArgumentList "clone", "https://github.com/bUKaneer/white-label.infrastructure.local-containers-and-packages.git"
+    Start-Process -Wait -FilePath $GitExecutablePath -ArgumentList "clone", "https://github.com/bUKaneer/white-label.infrastructure.local-containers-and-packages.git"
 }
 
 Set-Location $ContainerRegistryAndPackageManagerPath
-Start-Process -FilePath $DockerExecutablePath -ArgumentList "compose", "up"
+Start-Process -Wait -FilePath $DockerExecutablePath -ArgumentList "compose", "up"
 
 
 Set-Location $RootFolder
