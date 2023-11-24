@@ -7,11 +7,11 @@ $DockerExecutablePath = "C:\Program Files\Docker\Docker\resources\bin\docker.exe
 
 Set-Location "..\"
 
-$RootFolder = Get-Location
+$StartFolder = Get-Location
 
-Write-Host "RootFolder.Path: $RootFolder"
+Write-Host "RootFolder.Path: $StartFolder"
 
-$ProjectFolderPath = $RootFolder.Path + "\$projectName"
+$ProjectFolderPath = $StartFolder.Path + "\$projectName"
 
 Write-Host "WhiteLabelFolderPath: $ProjectFolderPath"
 
@@ -33,13 +33,13 @@ Start-Process -FilePath $DockerExecutablePath -ArgumentList "compose", "up"
 
 Start-Process -Wait $DotNetExecutablePath -ArgumentList "nuget", "add", "source", "http://localhost:19002/v3/index.json", "--name baget"
 
-Set-Location $RootFolder
+Set-Location $StartFolder
 
 Write-Host "Installing clean-arch template"
 
 Start-Process -Wait $DotNetExecutablePath -ArgumentList "new", "install", "Ardalis.CleanArchitecture.Template"
 
-$SystemRootFolder = "$RootFolder\System"
+$SystemRootFolder = "$StartFolder\System"
 Write-Host "SystemRootFolder: $SystemRootFolder"
 
 if (!(Test-Path $SystemRootFolder)) {
@@ -55,6 +55,20 @@ Write-Host "ProjectAspireFolder: $ProjectAspireFolder"
 if (!(Test-Path $ProjectAspireFolder)) {
     Start-Process -Wait $DotNetExecutablePath -ArgumentList "new", "aspire", "-o $ProjectAspire"
 }
+
+$AspireServerDefaultsFolder = "$ProjectAspireFolder\$ProjectAspire.ServiceDefaults"
+Write-Host "AspireServerDefaultsFolder: $AspireServerDefaultsFolder"
+
+Set-Location $AspireServerDefaultsFolder
+
+Start-Process -Wait $DotNetExecutablePath -ArgumentList "nuget", "pack", "--output nupkgs"
+
+Start-Process -Wait $DotNetExecutablePath -ArgumentList "nuget", "push", "./nupkgs/$ProjectAspire.ServiceDefaults.1.0.0.nupkg", "-s http://localhost:19002/v3/index.json", "-k 8B516EDB-7523-476E-AF43-79CCA054CE9F"
+
+# Back to Home
+
+Set-Location $StartFolder
+
 
 
 
