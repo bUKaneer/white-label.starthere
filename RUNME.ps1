@@ -1,6 +1,8 @@
 $GitExecutablePath = "C:\Program Files\Git\bin\git.exe"
 $DockerExecutablePath = "C:\Program Files\Docker\Docker\resources\bin\docker.exe"
 
+Set-Location "..\"
+
 $RootFolder = Get-Location
 
 Write-Host "RootFolder.Path: $RootFolder"
