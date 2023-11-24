@@ -23,7 +23,6 @@ if (!(Test-Path $ContainerRegistryAndPackageManagerPath)) {
 }
 
 Set-Location $ContainerRegistryAndPackageManagerPath
-Start-Process -Wait -FilePath $DockerExecutablePath -ArgumentList "compose", "up"
-
+Start-Process -FilePath $DockerExecutablePath -ArgumentList "compose", "up"
 
 Set-Location $RootFolder
