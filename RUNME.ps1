@@ -100,12 +100,9 @@ Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "new", "whi
 
 Set-Location $DemoProjectFolder
 
-$RunMeScript = "$DemoProjectFolder\RUNME.ps1 -aspireSolutionFolder `"$AspireProjectFolder`" -serviceDefaultsPackage `"$ProjectName.Aspire.ServiceDefaults`""
-
-& $RunMeScript
 
 Write-Host "Please run the following command:"
-Write-Host ".\RUNME.ps1 -aspireSolutionFolder `"$AspireProjectFolder`" -serviceDefaultsPackage `"$ProjectName.Aspire.ServiceDefaults`""
+Write-Host ".\RUNME.ps1 -aspireProjectName `"$AspireProject`" -aspireSolutionFolder `"$AspireProjectFolder`" -serviceDefaultsPackage `"$ProjectName.Aspire.ServiceDefaults`""
 
 
 
