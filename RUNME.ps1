@@ -73,7 +73,6 @@ Write-Host "AspireServerDefaultsFolder: $AspireServiceDefaultsFolder"
 Set-Location $AspireServiceDefaultsFolder
 
 Start-Process -Wait $DotNetExecutablePath -ArgumentList "nuget", "pack", "--output nupkgs"
-
 Start-Process -Wait $DotNetExecutablePath -ArgumentList "nuget", "push", "./nupkgs/$ProjectAspire.ServiceDefaults.1.0.0.nupkg", "-s http://localhost:19002/v3/index.json", "-k 8B516EDB-7523-476E-AF43-79CCA054CE9F"
 
 # Back to Home
