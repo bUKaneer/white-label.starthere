@@ -32,7 +32,7 @@ if (!(Test-Path $ContainerRegistryAndPackageManagerFolder)) {
 
 Set-Location $ContainerRegistryAndPackageManagerFolder
 
-Start-Process -FilePath $DockerExecutablePath -ArgumentList "compose", "up"
+Start-Process -FilePath $DockerExecutablePath -ArgumentList "compose", "up", "--detach"
 Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "nuget", "add", "source", "http://localhost:19002/v3/index.json", "--name baget.local"
 
 # Install Clean Architecture Template
@@ -70,6 +70,10 @@ if (!(Test-Path $AspireProjectFolder)) {
     Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "new", "aspire", "-o $AspireProject"
 }
 
+Set-Location $AspireProjectFolder
+
+Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "build"
+
 $AspireServiceDefaultsFolder = "$AspireProjectFolder\$AspireProject.ServiceDefaults"
 
 # Pack and Push Service Defaults Project to Baget
@@ -90,15 +94,11 @@ if (!(Test-Path $SubProjectsFolder)) {
 }
 
 Set-Location $SubProjectsFolder
-$DemoProjectFolder = "$ProjectFolder\WhiteLabel.Sample.Demo"
-
-if (!(Test-Path $DemoProjectFolder)) {
-    New-Item $DemoProjectFolder -ItemType Directory
-}
-
-Set-Location $DemoProjectFolder
+$DemoProjectFolder = "$SubProjectsFolder\WhiteLabel.Sample.Demo"
 
 Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "new", "whitelabel-service", "-o WhiteLabel.Sample.Demo"
+
+Set-Location $DemoProjectFolder
 
 Start-Process -NoNewWindow -Wait ".\RUNME.ps1" -ArgumentList "-aspireSolutionFolder $AspireProjectFolder", "-serviceDefaultsPackage $ProjectName"
 
