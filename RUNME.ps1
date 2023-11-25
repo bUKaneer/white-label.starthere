@@ -77,7 +77,8 @@ $AspireServiceDefaultsFolder = "$AspireProjectFolder\$AspireProject.ServiceDefau
 Set-Location $AspireServiceDefaultsFolder
 
 Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "pack", "--output nupkgs"
-Start-Process -NoNewWindow $DotNetExecutablePath -ArgumentList "nuget", "push", "./nupkgs/$AspireProject.ServiceDefaults.1.0.0.nupkg", "-s http://localhost:19002/v3/index.json", "-k 8B516EDB-7523-476E-AF43-79CCA054CE9F"
+
+Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "nuget", "push", "./nupkgs/$AspireProject.ServiceDefaults.1.0.0.nupkg", "-s http://localhost:19002/v3/index.json", "-k 8B516EDB-7523-476E-AF43-79CCA054CE9F"
 
 # Create Sub-Projects Folder
 
@@ -88,8 +89,18 @@ if (!(Test-Path $SubProjectsFolder)) {
     New-Item $SubProjectsFolder -ItemType Directory
 }
 
+Set-Location $SubProjectsFolder
+$DemoProjectFolder = "$ProjectFolder\WhiteLabel.Sample.Demo"
 
+if (!(Test-Path $DemoProjectFolder)) {
+    New-Item $DemoProjectFolder -ItemType Directory
+}
 
+Set-Location $DemoProjectFolder
+
+Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "new", "whitelabel-service", "-o WhiteLabel.Sample.Demo"
+
+Start-Process -NoNewWindow -Wait ".\RUNME.ps1" -ArgumentList "-aspireSolutionFolder $AspireProjectFolder", "-serviceDefaultsPackage $ProjectName"
 
 
 
