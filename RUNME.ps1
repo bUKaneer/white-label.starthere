@@ -1,16 +1,19 @@
 param([String]$n = "WhiteLabel")
 $ProjectName = $n
 
+# Set location for required executables
 $DotNetExecutablePath = "C:\Program Files\dotnet\dotnet.exe"
 $GitExecutablePath = "C:\Program Files\Git\bin\git.exe"
 $DockerExecutablePath = "C:\Program Files\Docker\Docker\resources\bin\docker.exe"
 
+# Move outside this folder and set as Start/Home folder.
 Set-Location "..\"
 
 $StartFolder = Get-Location
 
 Write-Host "StartFolder.Path: $StartFolder"
 
+# Create Distributed Project Folder
 $ProjectFolderPath = $StartFolder.Path + "\$projectName"
 
 Write-Host "WhiteLabelFolderPath: $ProjectFolderPath"
@@ -20,6 +23,8 @@ if (!(Test-Path $ProjectFolderPath)) {
 }
 
 Set-Location $ProjectFolderPath
+
+# Local Containers & Packages Setup
 
 $ContainerRegistryAndPackageManagerPath = "$ProjectFolderPath\white-label.infrastructure.local-containers-and-packages"
 Write-Host "ContainerRegistryAndPackageManagerPath: $ContainerRegistryAndPackageManagerPath"
@@ -35,9 +40,13 @@ Start-Process -Wait $DotNetExecutablePath -ArgumentList "nuget", "add", "source"
 
 Set-Location $StartFolder
 
-Write-Host "Installing clean-arch template"
+# Install Clean Architecture Template
 
-Start-Process -Wait $DotNetExecutablePath -ArgumentList "new", "install", "Ardalis.CleanArchitecture.Template"
+Write-Host "Installing Template: Ardalis.CleanArchitecture.Template::9.0.0-preview2"
+
+Start-Process -Wait $DotNetExecutablePath -ArgumentList "new", "install", "Ardalis.CleanArchitecture.Template::9.0.0-preview2"
+
+# Scaffold Distributed System
 
 $SystemRootFolder = "$StartFolder\System"
 Write-Host "SystemRootFolder: $SystemRootFolder"
@@ -56,10 +65,12 @@ if (!(Test-Path $ProjectAspireFolder)) {
     Start-Process -Wait $DotNetExecutablePath -ArgumentList "new", "aspire", "-o $ProjectAspire"
 }
 
-$AspireServerDefaultsFolder = "$ProjectAspireFolder\$ProjectAspire.ServiceDefaults"
-Write-Host "AspireServerDefaultsFolder: $AspireServerDefaultsFolder"
+$AspireServiceDefaultsFolder = "$ProjectAspireFolder\$ProjectAspire.ServiceDefaults"
+Write-Host "AspireServerDefaultsFolder: $AspireServiceDefaultsFolder"
 
-Set-Location $AspireServerDefaultsFolder
+# Pack and Push Service Defaults Project to Baget
+
+Set-Location $AspireServiceDefaultsFolder
 
 Start-Process -Wait $DotNetExecutablePath -ArgumentList "nuget", "pack", "--output nupkgs"
 
