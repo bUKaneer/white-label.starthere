@@ -33,13 +33,24 @@ if (!(Test-Path $ContainerRegistryAndPackageManagerFolder)) {
 Set-Location $ContainerRegistryAndPackageManagerFolder
 
 Start-Process -FilePath $DockerExecutablePath -ArgumentList "compose", "up"
-Start-Process -Wait $DotNetExecutablePath -ArgumentList "nuget", "add", "source", "http://localhost:19002/v3/index.json", "--name baget.local"
-
-Set-Location $StartFolder
+Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "nuget", "add", "source", "http://localhost:19002/v3/index.json", "--name baget.local"
 
 # Install Clean Architecture Template
 
-Start-Process -Wait $DotNetExecutablePath -ArgumentList "new", "install", "Ardalis.CleanArchitecture.Template::9.0.0-preview2"
+# Wait for Version 9 RTM
+# Start-Process -Wait $DotNetExecutablePath -ArgumentList "new", "install", "Ardalis.CleanArchitecture.Template::9.0.0-preview2"
+
+# Add Service Meta Project
+Set-Location $WhiteLabelCommonProjectsFolder
+$ServiceMetaProjectFolder = "$WhiteLabelCommonProjectsFolder\white-label.templates.ServiceMeta"
+
+if (!(Test-Path $ServiceMetaProjectFolder)) {
+    Start-Process -NoNewWindow -Wait $GitExecutablePath -ArgumentList "clone", "https://github.com/bUKaneer/white-label.templates.ServiceMeta.git"
+}
+
+Set-Location $ServiceMetaProjectFolder
+
+Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "new", "install .\"
 
 # Create Distributed Project Folder
 $ProjectFolder = "$StartFolder\$ProjectName"
@@ -56,7 +67,7 @@ $AspireProject = "$ProjectName.Aspire"
 $AspireProjectFolder = "$ProjectFolder\$AspireProject"
 
 if (!(Test-Path $AspireProjectFolder)) {
-    Start-Process -Wait $DotNetExecutablePath -ArgumentList "new", "aspire", "-o $AspireProject"
+    Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "new", "aspire", "-o $AspireProject"
 }
 
 $AspireServiceDefaultsFolder = "$AspireProjectFolder\$AspireProject.ServiceDefaults"
@@ -65,8 +76,8 @@ $AspireServiceDefaultsFolder = "$AspireProjectFolder\$AspireProject.ServiceDefau
 
 Set-Location $AspireServiceDefaultsFolder
 
-Start-Process -Wait $DotNetExecutablePath -ArgumentList "pack", "--output nupkgs"
-Start-Process -Wait $DotNetExecutablePath -ArgumentList "nuget", "push", "./nupkgs/$AspireProject.ServiceDefaults.1.0.0.nupkg", "-s http://localhost:19002/v3/index.json", "-k 8B516EDB-7523-476E-AF43-79CCA054CE9F"
+Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "pack", "--output nupkgs"
+Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "nuget", "push", "./nupkgs/$AspireProject.ServiceDefaults.1.0.0.nupkg", "-s http://localhost:19002/v3/index.json", "-k 8B516EDB-7523-476E-AF43-79CCA054CE9F"
 
 # Create Sub-Projects Folder
 
