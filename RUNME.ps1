@@ -33,7 +33,7 @@ if (!(Test-Path $ContainerRegistryAndPackageManagerFolder)) {
 Set-Location $ContainerRegistryAndPackageManagerFolder
 
 Start-Process -FilePath $DockerExecutablePath -ArgumentList "compose", "up"
-#Start-Process -Wait $DotNetExecutablePath -ArgumentList "nuget", "add", "source", "http://localhost:19002/v3/index.json", "--name baget.local"
+Start-Process -Wait $DotNetExecutablePath -ArgumentList "nuget", "add", "source", "http://localhost:19002/v3/index.json", "--name baget.local"
 
 Set-Location $StartFolder
 
@@ -42,8 +42,7 @@ Set-Location $StartFolder
 Start-Process -Wait $DotNetExecutablePath -ArgumentList "new", "install", "Ardalis.CleanArchitecture.Template::9.0.0-preview2"
 
 # Create Distributed Project Folder
-$ProjectFolder = "$StartFolder\$projectName"
-Write-Host "ProjectFolderPath: $ProjectFolder"
+$ProjectFolder = "$StartFolder\$ProjectName"
 
 if (!(Test-Path $ProjectFolder)) {
     New-Item $ProjectFolder -ItemType Directory
@@ -69,11 +68,14 @@ Set-Location $AspireServiceDefaultsFolder
 Start-Process -Wait $DotNetExecutablePath -ArgumentList "pack", "--output nupkgs"
 Start-Process -Wait $DotNetExecutablePath -ArgumentList "nuget", "push", "./nupkgs/$AspireProject.ServiceDefaults.1.0.0.nupkg", "-s http://localhost:19002/v3/index.json", "-k 8B516EDB-7523-476E-AF43-79CCA054CE9F"
 
-# Back to Home
+# Create Sub-Projects Folder
 
-Set-Location $StartFolder
+Set-Location $ProjectFolder
+$SubProjectsFolder = "$ProjectFolder\$ProjectName.Projects"
 
-
+if (!(Test-Path $SubProjectsFolder)) {
+    New-Item $SubProjectsFolder -ItemType Directory
+}
 
 
 
