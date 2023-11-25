@@ -1,6 +1,9 @@
 param([String]$n = "WhiteLabel")
 $ProjectName = $n
 
+# Welcome 
+Clear-Host
+
 # Set location for required executables
 $DotNetExecutablePath = "C:\Program Files\dotnet\dotnet.exe"
 $GitExecutablePath = "C:\Program Files\Git\bin\git.exe"
@@ -11,69 +14,60 @@ Set-Location "..\"
 
 $StartFolder = Get-Location
 
-Write-Host "StartFolder.Path: $StartFolder"
+$WhiteLabelCommonProjectsFolder = "$StartFolder\WhiteLabel.Common"
 
-# Create Distributed Project Folder
-$ProjectFolderPath = $StartFolder.Path + "\$projectName"
-
-Write-Host "WhiteLabelFolderPath: $ProjectFolderPath"
-
-if (!(Test-Path $ProjectFolderPath)) {
-    New-Item $ProjectFolderPath -ItemType Directory
+if (!(Test-Path $WhiteLabelCommonProjectsFolder)) {
+    New-Item $WhiteLabelCommonProjectsFolder -ItemType Directory
 }
 
-Set-Location $ProjectFolderPath
+Set-Location $WhiteLabelCommonProjectsFolder
 
 # Local Containers & Packages Setup
 
-$ContainerRegistryAndPackageManagerPath = "$ProjectFolderPath\white-label.infrastructure.local-containers-and-packages"
-Write-Host "ContainerRegistryAndPackageManagerPath: $ContainerRegistryAndPackageManagerPath"
+$ContainerRegistryAndPackageManagerFolder = "$WhiteLabelCommonProjectsFolder\white-label.infrastructure.local-containers-and-packages"
 
-if (!(Test-Path $ContainerRegistryAndPackageManagerPath)) {
+if (!(Test-Path $ContainerRegistryAndPackageManagerFolder)) {
     Start-Process -Wait -FilePath $GitExecutablePath -ArgumentList "clone", "https://github.com/bUKaneer/white-label.infrastructure.local-containers-and-packages.git"
 }
 
-Set-Location $ContainerRegistryAndPackageManagerPath
-Start-Process -FilePath $DockerExecutablePath -ArgumentList "compose", "up"
+Set-Location $ContainerRegistryAndPackageManagerFolder
 
-Start-Process -Wait $DotNetExecutablePath -ArgumentList "nuget", "add", "source", "http://localhost:19002/v3/index.json", "--name baget"
+Start-Process -FilePath $DockerExecutablePath -ArgumentList "compose", "up"
+#Start-Process -Wait $DotNetExecutablePath -ArgumentList "nuget", "add", "source", "http://localhost:19002/v3/index.json", "--name baget.local"
 
 Set-Location $StartFolder
 
 # Install Clean Architecture Template
 
-Write-Host "Installing Template: Ardalis.CleanArchitecture.Template::9.0.0-preview2"
-
 Start-Process -Wait $DotNetExecutablePath -ArgumentList "new", "install", "Ardalis.CleanArchitecture.Template::9.0.0-preview2"
+
+# Create Distributed Project Folder
+$ProjectFolder = "$StartFolder\$projectName"
+Write-Host "ProjectFolderPath: $ProjectFolder"
+
+if (!(Test-Path $ProjectFolder)) {
+    New-Item $ProjectFolder -ItemType Directory
+}
 
 # Scaffold Distributed System
 
-$SystemRootFolder = "$StartFolder\System"
-Write-Host "SystemRootFolder: $SystemRootFolder"
+Set-Location $ProjectFolder 
 
-if (!(Test-Path $SystemRootFolder)) {
-    New-Item $SystemRootFolder -ItemType Directory
+$AspireProject = "$ProjectName.Aspire"
+$AspireProjectFolder = "$ProjectFolder\$AspireProject"
+
+if (!(Test-Path $AspireProjectFolder)) {
+    Start-Process -Wait $DotNetExecutablePath -ArgumentList "new", "aspire", "-o $AspireProject"
 }
 
-Set-Location $SystemRootFolder 
-
-$ProjectAspire = "$ProjectName.Aspire"
-$ProjectAspireFolder = "$SystemRootFolder\$ProjectAspire"
-Write-Host "ProjectAspireFolder: $ProjectAspireFolder"
-
-if (!(Test-Path $ProjectAspireFolder)) {
-    Start-Process -Wait $DotNetExecutablePath -ArgumentList "new", "aspire", "-o $ProjectAspire"
-}
-
-$AspireServiceDefaultsFolder = "$ProjectAspireFolder\$ProjectAspire.ServiceDefaults"
-Write-Host "AspireServerDefaultsFolder: $AspireServiceDefaultsFolder"
+$AspireServiceDefaultsFolder = "$AspireProjectFolder\$AspireProject.ServiceDefaults"
 
 # Pack and Push Service Defaults Project to Baget
 
 Set-Location $AspireServiceDefaultsFolder
 
-Start-Process -Wait $DotNetExecutablePath -ArgumentList "nuget", "pack", "--output nupkgs"
-Start-Process -Wait $DotNetExecutablePath -ArgumentList "nuget", "push", "./nupkgs/$ProjectAspire.ServiceDefaults.1.0.0.nupkg", "-s http://localhost:19002/v3/index.json", "-k 8B516EDB-7523-476E-AF43-79CCA054CE9F"
+Start-Process -Wait $DotNetExecutablePath -ArgumentList "pack", "--output nupkgs"
+Start-Process -Wait $DotNetExecutablePath -ArgumentList "nuget", "push", "./nupkgs/$AspireProject.ServiceDefaults.1.0.0.nupkg", "-s http://localhost:19002/v3/index.json", "-k 8B516EDB-7523-476E-AF43-79CCA054CE9F"
 
 # Back to Home
 
