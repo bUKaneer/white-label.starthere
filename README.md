@@ -15,7 +15,7 @@ To use the White Label eco-system you will need the following software installed
 
 ## Usage
 
-In your terminal `git clone` this repo and then in your terminal from the root run `.\RUNME.ps`.
+Run the following commands in powershell.
 
 ```powershell
 git clone https://github.com/bUKaneer/white-label.starthere.git
