@@ -22,5 +22,5 @@ git clone https://github.com/bUKaneer/white-label.starthere.git
 
 cd .\white-label.starthere
 
-.\RUNME.ps1
+.\RUNME.ps1 -n "YourDistributedProjectName"
 ```
