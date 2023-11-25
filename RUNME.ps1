@@ -9,7 +9,7 @@ Set-Location "..\"
 
 $StartFolder = Get-Location
 
-Write-Host "RootFolder.Path: $StartFolder"
+Write-Host "StartFolder.Path: $StartFolder"
 
 $ProjectFolderPath = $StartFolder.Path + "\$projectName"
 
