@@ -1,6 +1,24 @@
-# Start Here
+# ASP.NET Aspire with Clean Architecture in 3 commands!
 
-The `.\RUNME.ps1` script will, when run, generate the white label eco-system.
+## First Command
+
+Get the start here repo:
+
+`git clone https://github.com/bUKaneer/white-label.starthere.git`
+
+## Second Command
+
+Run the RUNME script to setup the environment:
+
+`.\RUNME.ps1 -n "WhiteLabel"`
+
+## Third Command
+
+Integrate the generated Service with Aspire. This is generated at the end of the first step for the Demo Service that is created.
+
+When generating your own services you will need to run the script with parameters suitable for your new service.
+
+`.\RUNME.ps1 -aspireProjectName "WhiteLabel.Aspire" -aspireSolutionFolder "C:\wl\WhiteLabel\WhiteLabel.Aspire" -serviceDefaultsPackage "WhiteLabel.Aspire.ServiceDefaults"`
 
 ## Required Software
 
@@ -12,15 +30,3 @@ To use the White Label eco-system you will need the following software installed
   - `dotnet workload install aspire`
 - [Powershell](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.3)
 - [Git](https://git-scm.com/downloads)
-
-## Usage
-
-Run the following commands in powershell.
-
-```powershell
-git clone https://github.com/bUKaneer/white-label.starthere.git
-
-cd .\white-label.starthere
-
-.\RUNME.ps1 -n "YourDistributedProjectName"
-```
