@@ -94,9 +94,9 @@ if (!(Test-Path $SubProjectsFolder)) {
 }
 
 Set-Location $SubProjectsFolder
-$DemoProjectFolder = "$SubProjectsFolder\WhiteLabel.Sample.Demo"
+$DemoProjectFolder = "$SubProjectsFolder\$ProjectName.Sample.Demo"
 
-Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "new", "whitelabel-service", "-o WhiteLabel.Sample.Demo"
+Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "new", "whitelabel-service", "-o $ProjectName.Sample.Demo"
 
 Set-Location $DemoProjectFolder
 
