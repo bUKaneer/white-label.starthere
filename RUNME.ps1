@@ -155,7 +155,7 @@ $ContainerRegistryPort = Get-InactiveTcpPort 10000 50000
 $ContainerRegistryUserInterfacePort = Get-InactiveTcpPort 10000 50000
 $PackageSourcePort = Get-InactiveTcpPort 10000 50000
 
-Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "run", $ContainerRegistryPort, $ContainerRegistryUserInterfacePort, $PackageSourcePort
+Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "run", $ProjectName, $ContainerRegistryPort, $ContainerRegistryUserInterfacePort, $PackageSourcePort
 
 # Create Demo Project based on white-label.service template
 
