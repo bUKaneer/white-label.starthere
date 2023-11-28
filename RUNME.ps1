@@ -173,6 +173,14 @@ Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "pack", "--
 
 Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "nuget", "push", "./nupkgs/$AspireProject.ServiceDefaults.1.0.0.nupkg", "-s http://localhost:$PackageSourcePort/v3/index.json", "-k 8B516EDB-7523-476E-AF43-79CCA054CE9F"
 
+# Copy Nuget File to Folders Where Needed 
+
+$NugetConfigFilePath = "$SubProjectPackagesAndContainersFolder\nuget.config"
+
+Copy-Item $NugetConfigFilePath "$DemoProjectFolder\src\Application\UserInterface\$ProjectName.UserInterface"
+Copy-Item $NugetConfigFilePath "$DemoProjectFolder\src\Application\$ProjectName.WebApi"
+Copy-Item $NugetConfigFilePath "$AspireProjectFolder\$ProjectName.Aspire.AppHost"
+
 # Write Output to Console
 
 Write-Host ""
