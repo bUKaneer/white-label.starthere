@@ -62,7 +62,6 @@ Clear-Host
 # Set location for required executables
 $DotNetExecutablePath = "C:\Program Files\dotnet\dotnet.exe"
 $GitExecutablePath = "C:\Program Files\Git\bin\git.exe"
-$DockerExecutablePath = "C:\Program Files\Docker\Docker\resources\bin\docker.exe"
 
 # Move outside this folder and set as Start/Home folder.
 Set-Location "..\"
