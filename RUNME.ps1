@@ -161,9 +161,11 @@ Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "run", $Pro
 
 Set-Location $SubProjectsFolder
 
-$DemoProjectFolder = "$SubProjectsFolder\$ProjectName.Sample.Demo"
+$DemoProjectName = "$ProjectName.Sample.Demo";
 
-Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "new", "whitelabel-service", "-o $ProjectName.Sample.Demo"
+$DemoProjectFolder = "$SubProjectsFolder\$DemoProjectName"
+
+Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "new", "whitelabel-service", "-o $DemoProjectName"
 
 # Pack and Push Service Defaults Project to Baget
 
@@ -177,10 +179,10 @@ Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "nuget", "p
 
 $NugetConfigFilePath = "$SubProjectPackagesAndContainersFolder\nuget.config"
 
-Copy-Item -Path $NugetConfigFilePath -Destination "$DemoProjectFolder\src\Application\UserInterface\$ProjectName.UserInterface\"
-Copy-Item -Path $NugetConfigFilePath -Destination "$DemoProjectFolder\src\Application\$ProjectName.WebApi\"
+Copy-Item -Path $NugetConfigFilePath -Destination "$DemoProjectFolder\src\Application\UserInterface\$DemoProjectName.UserInterface\"
+Copy-Item -Path $NugetConfigFilePath -Destination "$DemoProjectFolder\src\Application\$DemoProjectName.WebApi\"
 Copy-Item -Path $NugetConfigFilePath -Destination "$AspireProjectFolder\$ProjectName.Aspire.AppHost\"
-
+                                                       
 # Write Output to Console
 
 Write-Host ""
