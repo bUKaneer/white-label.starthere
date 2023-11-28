@@ -177,9 +177,9 @@ Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "nuget", "p
 
 $NugetConfigFilePath = "$SubProjectPackagesAndContainersFolder\nuget.config"
 
-Copy-Item $NugetConfigFilePath "$DemoProjectFolder\src\Application\UserInterface\$ProjectName.UserInterface"
-Copy-Item $NugetConfigFilePath "$DemoProjectFolder\src\Application\$ProjectName.WebApi"
-Copy-Item $NugetConfigFilePath "$AspireProjectFolder\$ProjectName.Aspire.AppHost"
+Copy-Item -Path $NugetConfigFilePath -Destination "$DemoProjectFolder\src\Application\UserInterface\$ProjectName.UserInterface\"
+Copy-Item -Path $NugetConfigFilePath -Destination "$DemoProjectFolder\src\Application\$ProjectName.WebApi\"
+Copy-Item -Path $NugetConfigFilePath -Destination "$AspireProjectFolder\$ProjectName.Aspire.AppHost\"
 
 # Write Output to Console
 
