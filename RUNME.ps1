@@ -197,10 +197,10 @@ Write-Host ""
 Write-Host "==========================================================================="
 Write-Host "Please run the following command:"
 Write-Host ""
-Write-Host ".\RUNME.ps1 -aspireProjectName `"$AspireProject`" -aspireSolutionFolder `"$AspireProjectFolder`" -serviceDefaultsPackage `"$ProjectName.Aspire.ServiceDefaults`""
+Write-Host ".\RUNME.ps1 -aspireProjectName `"$AspireProject`" -aspireSolutionFolder `"$AspireProjectFolder`" -serviceDefaultsPackage `"$ProjectName.Aspire.ServiceDefaults`" -packagesAndContainersSolutionFolder `"$SubProjectPackagesAndContainersFolder`""
 Write-Host ""
 Write-Host "==========================================================================="
-
+#
 # Put User in Correct Folder to Run Demo Setup Script
 
 Set-Location $DemoProjectFolder
