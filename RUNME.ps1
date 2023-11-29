@@ -229,7 +229,7 @@ Write-Host @"
 
 Please run the following command to reference the Demo Project from Aspire:"
 
-`.\RUNME.ps1 -aspireProjectName "$AspireProject" -aspireSolutionFolder "$AspireProjectFolder" -serviceDefaultsPackage `"$ProjectName.Aspire.ServiceDefaults`" -packagesAndContainersSolutionFolder "$SubProjectPackagesAndContainersFolder"`
+`.\RUNME.ps1 -aspireProjectName "$AspireProject" -aspireSolutionFolder "$AspireProjectFolder" -serviceDefaultsPackage `"$ProjectName.Aspire.ServiceDefaults`" -packagesAndContainersSolutionFolder "$ProjectPackagesAndContainersFolder"`
 
 *****************************************************************************
 
