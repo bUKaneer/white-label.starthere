@@ -68,7 +68,7 @@ Set-Location "..\"
 
 $StartFolder = Get-Location
 
-$WhiteLabelCommonProjectsFolder = "$StartFolder\WhiteLabel.Common"
+$WhiteLabelCommonProjectsFolder = "$StartFolder\WhiteLabel.Template"
 
 if (!(Test-Path $WhiteLabelCommonProjectsFolder)) {
     New-Item $WhiteLabelCommonProjectsFolder -ItemType Directory
@@ -87,7 +87,7 @@ if (!(Test-Path $ServiceMetaProjectFolder)) {
 
 Set-Location $ServiceMetaProjectFolder
 
-Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "new", "install .\"
+Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "new", "install .\", "--force"
 
 # Add Packages and Containers Project
 
@@ -101,7 +101,7 @@ if (!(Test-Path $PackagesAndContainersProjectFolder)) {
 
 Set-Location $PackagesAndContainersProjectFolder
 
-Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "new", "install .\"
+Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "new", "install .\", "--force"
 
 # Create Distributed Project Folder
 $ProjectFolder = "$StartFolder\$ProjectName"
@@ -125,36 +125,39 @@ if (!(Test-Path $AspireProjectFolder)) {
 
 Set-Location $AspireProjectFolder
 
-Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "build"
-
 $AspireServiceDefaultsFolder = "$AspireProjectFolder\$AspireProject.ServiceDefaults"
 
-# Create Sub-Projects Folder (A folder into which you can place all your supporting code, Service Solutions, Templates, Project bound for Nuget etc)
+Set-Location $AspireServiceDefaultsFolder
 
-Set-Location $ProjectFolder
-$SubProjectsFolder = "$ProjectFolder\$ProjectName.Projects"
-
-if (!(Test-Path $SubProjectsFolder)) {
-    New-Item $SubProjectsFolder -ItemType Directory
-}
-
-# Create SubProjects (Can be AppHosted Services or other Solutions)
+Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "build"
 
 # Create Packages and Containers Project based on white-label.packagesandcontainers
 
-Set-Location $SubProjectsFolder
+Set-Location $ProjectFolder
 
 Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "new", "whitelabel-packages-and-containers", "-o $ProjectName.PackagesAndContainers"
 
-$SubProjectPackagesAndContainersFolder = "$SubProjectsFolder\$ProjectName.PackagesAndContainers"
+$ProjectPackagesAndContainersFolder = "$ProjectFolder\$ProjectName.PackagesAndContainers"
 
-Set-Location $SubProjectPackagesAndContainersFolder
+Set-Location $ProjectPackagesAndContainersFolder
 
 $ContainerRegistryPort = Get-InactiveTcpPort 10000 50000
 $ContainerRegistryUserInterfacePort = Get-InactiveTcpPort 10000 50000
 $PackageSourcePort = Get-InactiveTcpPort 10000 50000
 
 Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "run", $ProjectName, $ContainerRegistryPort, $ContainerRegistryUserInterfacePort, $PackageSourcePort
+
+# Create Sub-Projects Folder (A folder into which you can place all your supporting code, Service Solutions, Templates, Project bound for Nuget etc)
+
+Set-Location $ProjectFolder
+
+$SubProjectsFolder = "$ProjectFolder\$ProjectName.Projects"
+
+if (!(Test-Path $SubProjectsFolder)) {
+    New-Item $SubProjectsFolder -ItemType Directory
+}
+
+# Create SubProjects 
 
 # Create Demo Project based on white-label.service template
 
@@ -166,6 +169,16 @@ $DemoProjectFolder = "$SubProjectsFolder\$DemoProjectName"
 
 Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "new", "whitelabel-service", "-o $DemoProjectName"
 
+$DemoUserInterfaceProjectFolder = "$DemoProjectFolder\src\Application\UserInterface\$DemoProjectName.UserInterface\"
+
+# Copy Nuget File to Folders Where Needed 
+
+$NugetConfigFilePath = "$ProjectPackagesAndContainersFolder\nuget.config"
+
+Copy-Item -Path $NugetConfigFilePath -Destination "$DemoUserInterfaceProjectFolder"
+Copy-Item -Path $NugetConfigFilePath -Destination "$DemoProjectFolder\src\Application\$DemoProjectName.WebApi\"
+Copy-Item -Path $NugetConfigFilePath -Destination "$AspireProjectFolder\$ProjectName.Aspire.AppHost\"
+
 # Pack and Push Service Defaults Project to Baget
 
 Set-Location $AspireServiceDefaultsFolder
@@ -174,37 +187,50 @@ Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "pack", "--
 
 Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "nuget", "push", "./nupkgs/$AspireProject.ServiceDefaults.1.0.0.nupkg", "-s http://localhost:$PackageSourcePort/v3/index.json", "-k 8B516EDB-7523-476E-AF43-79CCA054CE9F"
 
-# Copy Nuget File to Folders Where Needed 
-
-$NugetConfigFilePath = "$SubProjectPackagesAndContainersFolder\nuget.config"
-
-Copy-Item -Path $NugetConfigFilePath -Destination "$DemoProjectFolder\src\Application\UserInterface\$DemoProjectName.UserInterface\"
-Copy-Item -Path $NugetConfigFilePath -Destination "$DemoProjectFolder\src\Application\$DemoProjectName.WebApi\"
-Copy-Item -Path $NugetConfigFilePath -Destination "$AspireProjectFolder\$ProjectName.Aspire.AppHost\"
-                                                       
 # Write Output to Console
 
-Write-Host ""
-Write-Host ""
-Write-Host ""
-Write-Host "==========================================================================="
-Write-Host "The following docker containers have been setup for this project: "
-Write-Host ""
-Write-Host "  Container Registry: http://localhost:$ContainerRegistryPort"
-Write-Host "  Container Registry UI: http://localhost:$ContainerRegistryUserInterfacePort"
-Write-Host "  Package Source UI: http://localhost:$PackageSourcePort"
-Write-Host ""
-Write-Host "==========================================================================="
-Write-Host "Please run the following command:"
-Write-Host ""
-Write-Host ".\RUNME.ps1 -aspireProjectName `"$AspireProject`" -aspireSolutionFolder `"$AspireProjectFolder`" -serviceDefaultsPackage `"$ProjectName.Aspire.ServiceDefaults`" -packagesAndContainersSolutionFolder `"$SubProjectPackagesAndContainersFolder`""
-Write-Host ""
-Write-Host "==========================================================================="
-#
+$ReadMe = @"
+# Development Environment Information 
+
+The following docker containers have been setup for this project: "
+
+- Container Registry: http://localhost:$ContainerRegistryPort"
+- Container Registry UI: http://localhost:$ContainerRegistryUserInterfacePort"
+- Package Source UI: http://localhost:$PackageSourcePort"
+
+To add a new HostedProject (Service) first create the Project using the following command:
+
+`dotnet new whitelabel-service -o YourProjectPrefix.YourProjectName`
+
+Once created:
+
+`cd .\YourProjectPrefix.YourProjectName\'
+
+Then run the following command to reference the Demo Projects from Aspire:"
+
+Example (Change values as required):
+
+`.\RUNME.ps1 -aspireProjectName "$AspireProject" -aspireSolutionFolder "$AspireProjectFolder" -serviceDefaultsPackage `"$ProjectName.Aspire.ServiceDefaults`" -packagesAndContainersSolutionFolder "$SubProjectPackagesAndContainersFolder"`
+
+"@
+
+Set-Location $ProjectFolder 
+
+New-Item -Path ".\README.md" -ItemType File
+Set-Content -Path ".\README.md" $ReadMe
+
 # Put User in Correct Folder to Run Demo Setup Script
 
 Set-Location $DemoProjectFolder
 
+Write-Host @"
 
+*****************************************************************************
 
+Please run the following command to reference the Demo Project from Aspire:"
 
+`.\RUNME.ps1 -aspireProjectName "$AspireProject" -aspireSolutionFolder "$AspireProjectFolder" -serviceDefaultsPackage `"$ProjectName.Aspire.ServiceDefaults`" -packagesAndContainersSolutionFolder "$SubProjectPackagesAndContainersFolder"`
+
+*****************************************************************************
+
+"@
