@@ -103,7 +103,20 @@ Set-Location $PackagesAndContainersProjectFolder
 
 Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "new", "install .\", "--force"
 
-# Create Distributed Project Folder
+# Add Shared Kernel Template
+
+Set-Location $WhiteLabelCommonProjectsFolder
+$SharedKernelProjectFolder = "$WhiteLabelCommonProjectsFolder\white-label.templates.SharedKernel"
+
+if (!(Test-Path $SharedKernelProjectFolder)) {
+    Start-Process -NoNewWindow -Wait $GitExecutablePath -ArgumentList "clone", "https://github.com/bUKaneer/white-label.templates.SharedKernel.git"
+}
+
+Set-Location $SharedKernelProjectFolder
+
+Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "new", "install .\", "--force"
+
+# Create Aspire.HostedProjects Project Folder
 $ProjectFolder = "$StartFolder\$ProjectName"
 
 if (!(Test-Path $ProjectFolder)) {
@@ -171,6 +184,16 @@ Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "new", "whi
 
 $DemoUserInterfaceProjectFolder = "$DemoProjectFolder\src\Application\UserInterface\$DemoProjectName.UserInterface\"
 
+# Create Shared Kernel based on white-label.sharedkernel template
+
+Set-Location $SubProjectsFolder
+
+$SharedKernelProjectName = "$ProjectName.SharedKernel";
+
+$SharedKernelProjectFolder = "$SubProjectsFolder\$SharedKernelProjectName"
+
+Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "new", "whitelabel-sharedkernel", "-o $SharedKernelProjectName"
+
 # Copy Nuget File to Folders Where Needed 
 
 $NugetConfigFilePath = "$ProjectPackagesAndContainersFolder\nuget.config"
@@ -186,6 +209,14 @@ Set-Location $AspireServiceDefaultsFolder
 Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "pack", "--output nupkgs"
 
 Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "nuget", "push", "./nupkgs/$AspireProject.ServiceDefaults.1.0.0.nupkg", "-s http://localhost:$PackageSourcePort/v3/index.json", "-k 8B516EDB-7523-476E-AF43-79CCA054CE9F"
+
+# Pack and Push Shared Kernel Project to Baget
+
+Set-Location $SharedKernelProjectFolder
+
+Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "pack", "--output nupkgs"
+
+Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "nuget", "push", "./nupkgs/$SharedKernelProjectName.1.0.0.nupkg", "-s http://localhost:$PackageSourcePort/v3/index.json", "-k 8B516EDB-7523-476E-AF43-79CCA054CE9F"
 
 # Write Output to Console
 
