@@ -82,12 +82,14 @@ Set-Location $WhiteLabelCommonProjectsFolder
 $ServiceMetaProjectFolder = "$WhiteLabelCommonProjectsFolder\white-label.templates.ServiceMeta"
 
 if (!(Test-Path $ServiceMetaProjectFolder)) {
-    Start-Process -NoNewWindow -Wait $GitExecutablePath -ArgumentList "clone", "https://github.com/bUKaneer/white-label.templates.ServiceMeta.git"
+    $Process = Start-Process -NoNewWindow -PassThru $GitExecutablePath -ArgumentList "clone", "https://github.com/bUKaneer/white-label.templates.ServiceMeta.git"
+    $Process.WaitForExit()
 }
 
 Set-Location $ServiceMetaProjectFolder
 
-Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "new", "install .\", "--force"
+$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "new", "install .\", "--force"
+$Process.WaitForExit()
 
 # Add Packages and Containers Project
 
@@ -96,12 +98,14 @@ Set-Location $WhiteLabelCommonProjectsFolder
 $PackagesAndContainersProjectFolder = "$WhiteLabelCommonProjectsFolder\white-label.templates.Projects.PackagesAndContainers"
 
 if (!(Test-Path $PackagesAndContainersProjectFolder)) {
-    Start-Process -NoNewWindow -Wait $GitExecutablePath -ArgumentList "clone", "https://github.com/bUKaneer/white-label.templates.Projects.PackagesAndContainers.git"
+    $Process = Start-Process -NoNewWindow -PassThru $GitExecutablePath -ArgumentList "clone", "https://github.com/bUKaneer/white-label.templates.Projects.PackagesAndContainers.git"
+    $Process.WaitForExit()
 }
 
 Set-Location $PackagesAndContainersProjectFolder
 
-Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "new", "install .\", "--force"
+$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "new", "install .\", "--force"
+$Process.WaitForExit()
 
 # Add Shared Kernel Template
 
@@ -109,12 +113,14 @@ Set-Location $WhiteLabelCommonProjectsFolder
 $SharedKernelProjectFolder = "$WhiteLabelCommonProjectsFolder\white-label.templates.SharedKernel"
 
 if (!(Test-Path $SharedKernelProjectFolder)) {
-    Start-Process -NoNewWindow -Wait $GitExecutablePath -ArgumentList "clone", "https://github.com/bUKaneer/white-label.templates.SharedKernel.git"
+    $Process = Start-Process -NoNewWindow -PassThru $GitExecutablePath -ArgumentList "clone", "https://github.com/bUKaneer/white-label.templates.SharedKernel.git"
+    $Process.WaitForExit()
 }
 
 Set-Location $SharedKernelProjectFolder
 
-Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "new", "install .\", "--force"
+$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "new", "install .\", "--force"
+$Process.WaitForExit()
 
 # Create Aspire.HostedProjects Project Folder
 $ProjectFolder = "$StartFolder\$ProjectName"
@@ -133,7 +139,8 @@ $AspireProject = "$ProjectName.Aspire"
 $AspireProjectFolder = "$ProjectFolder\$AspireProject"
 
 if (!(Test-Path $AspireProjectFolder)) {
-    Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "new", "aspire", "-o $AspireProject"
+    $Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "new", "aspire", "-o $AspireProject"
+    $Process.WaitForExit()
 }
 
 Set-Location $AspireProjectFolder
@@ -142,13 +149,15 @@ $AspireServiceDefaultsFolder = "$AspireProjectFolder\$AspireProject.ServiceDefau
 
 Set-Location $AspireServiceDefaultsFolder
 
-Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "build"
+$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "build"
+$Process.WaitForExit()
 
 # Create Packages and Containers Project based on white-label.packagesandcontainers
 
 Set-Location $ProjectFolder
 
-Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "new", "whitelabel-packages-and-containers", "-o $ProjectName.PackagesAndContainers"
+$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "new", "whitelabel-packages-and-containers", "-o $ProjectName.PackagesAndContainers"
+$Process.WaitForExit()
 
 $ProjectPackagesAndContainersFolder = "$ProjectFolder\$ProjectName.PackagesAndContainers"
 
@@ -158,7 +167,7 @@ $ContainerRegistryPort = Get-InactiveTcpPort 10000 50000
 $ContainerRegistryUserInterfacePort = Get-InactiveTcpPort 10000 50000
 $PackageSourcePort = Get-InactiveTcpPort 10000 50000
 
-Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "run", $ProjectName, $ContainerRegistryPort, $ContainerRegistryUserInterfacePort, $PackageSourcePort
+Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "run", $ProjectName, $ContainerRegistryPort, $ContainerRegistryUserInterfacePort, $PackageSourcePort
 
 # Create Sub-Projects Folder (A folder into which you can place all your supporting code, Service Solutions, Templates, Project bound for Nuget etc)
 
@@ -180,7 +189,8 @@ $DemoProjectName = "$ProjectName.Sample.Demo";
 
 $DemoProjectFolder = "$SubProjectsFolder\$DemoProjectName"
 
-Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "new", "whitelabel-service", "-o $DemoProjectName"
+$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "new", "whitelabel-service", "-o $DemoProjectName"
+$Process.WaitForExit()
 
 $DemoUserInterfaceProjectFolder = "$DemoProjectFolder\src\Application\UserInterface\$DemoProjectName.UserInterface\"
 
@@ -192,7 +202,8 @@ $SharedKernelProjectName = "$ProjectName.SharedKernel";
 
 $SharedKernelProjectFolder = "$SubProjectsFolder\$SharedKernelProjectName"
 
-Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "new", "whitelabel-sharedkernel", "-o $SharedKernelProjectName"
+$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "new", "whitelabel-sharedkernel", "-o $SharedKernelProjectName"
+$Process.WaitForExit()
 
 # Copy Nuget File to Folders Where Needed 
 
@@ -206,17 +217,21 @@ Copy-Item -Path $NugetConfigFilePath -Destination "$AspireProjectFolder\$Project
 
 Set-Location $AspireServiceDefaultsFolder
 
-Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "pack", "--output nupkgs"
+$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "pack", "--output nupkgs"
+$Process.WaitForExit()
 
-Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "nuget", "push", "./nupkgs/$AspireProject.ServiceDefaults.1.0.0.nupkg", "-s http://localhost:$PackageSourcePort/v3/index.json", "-k 8B516EDB-7523-476E-AF43-79CCA054CE9F"
+$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "nuget", "push", "./nupkgs/$AspireProject.ServiceDefaults.1.0.0.nupkg", "-s http://localhost:$PackageSourcePort/v3/index.json", "-k 8B516EDB-7523-476E-AF43-79CCA054CE9F"
+$Process.WaitForExit()
 
 # Pack and Push Shared Kernel Project to Baget
 
 Set-Location $SharedKernelProjectFolder
 
-Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "pack", "--output nupkgs"
+$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "pack", "--output nupkgs"
+$Process.WaitForExit()
 
-Start-Process -NoNewWindow -Wait $DotNetExecutablePath -ArgumentList "nuget", "push", "./nupkgs/$SharedKernelProjectName.1.0.0.nupkg", "-s http://localhost:$PackageSourcePort/v3/index.json", "-k 8B516EDB-7523-476E-AF43-79CCA054CE9F"
+$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "nuget", "push", "./nupkgs/$SharedKernelProjectName.1.0.0.nupkg", "-s http://localhost:$PackageSourcePort/v3/index.json", "-k 8B516EDB-7523-476E-AF43-79CCA054CE9F"
+$Process.WaitForExit()
 
 # Write Output to Console
 
