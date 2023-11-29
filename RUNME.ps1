@@ -210,7 +210,7 @@ Then run the following command to reference the Demo Projects from Aspire:"
 
 Example (Change values as required):
 
-`.\RUNME.ps1 -aspireProjectName "$AspireProject" -aspireSolutionFolder "$AspireProjectFolder" -serviceDefaultsPackage `"$ProjectName.Aspire.ServiceDefaults`" -packagesAndContainersSolutionFolder "$SubProjectPackagesAndContainersFolder"`
+`.\RUNME.ps1 -aspireProjectName "$AspireProject" -aspireSolutionFolder "$AspireProjectFolder" -serviceDefaultsPackage `"$ProjectName.Aspire.ServiceDefaults`" -packagesAndContainersSolutionFolder "$ProjectPackagesAndContainersFolder"`
 
 "@
 
