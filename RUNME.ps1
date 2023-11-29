@@ -167,7 +167,8 @@ $ContainerRegistryPort = Get-InactiveTcpPort 10000 50000
 $ContainerRegistryUserInterfacePort = Get-InactiveTcpPort 10000 50000
 $PackageSourcePort = Get-InactiveTcpPort 10000 50000
 
-Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "run", $ProjectName, $ContainerRegistryPort, $ContainerRegistryUserInterfacePort, $PackageSourcePort
+$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "run", $ProjectName, $ContainerRegistryPort, $ContainerRegistryUserInterfacePort, $PackageSourcePort
+$Process.WaitForExit()
 
 # Create Sub-Projects Folder (A folder into which you can place all your supporting code, Service Solutions, Templates, Project bound for Nuget etc)
 
