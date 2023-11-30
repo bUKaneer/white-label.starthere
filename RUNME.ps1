@@ -74,8 +74,6 @@ if (!(Test-Path $WhiteLabelCommonProjectsFolder)) {
     New-Item $WhiteLabelCommonProjectsFolder -ItemType Directory
 }
 
-Set-Location $WhiteLabelCommonProjectsFolder
-
 # Add Service Meta Project
 
 Set-Location $WhiteLabelCommonProjectsFolder
@@ -110,14 +108,14 @@ $Process.WaitForExit()
 # Add Shared Kernel Template
 
 Set-Location $WhiteLabelCommonProjectsFolder
-$SharedKernelProjectFolder = "$WhiteLabelCommonProjectsFolder\white-label.templates.SharedKernel"
+$SharedKernelTemplateProjectFolder = "$WhiteLabelCommonProjectsFolder\white-label.templates.SharedKernel"
 
-if (!(Test-Path $SharedKernelProjectFolder)) {
+if (!(Test-Path $SharedKernelTemplateProjectFolder)) {
     $Process = Start-Process -NoNewWindow -PassThru $GitExecutablePath -ArgumentList "clone", "https://github.com/bUKaneer/white-label.templates.SharedKernel.git"
     $Process.WaitForExit()
 }
 
-Set-Location $SharedKernelProjectFolder
+Set-Location $SharedKernelTemplateProjectFolder
 
 $Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "new", "install .\", "--force"
 $Process.WaitForExit()
@@ -139,7 +137,7 @@ $AspireProject = "$ProjectName.Aspire"
 $AspireProjectFolder = "$ProjectFolder\$AspireProject"
 
 if (!(Test-Path $AspireProjectFolder)) {
-    $Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "new", "aspire", "-o $AspireProject"
+    $Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "new", "aspire", "-o $AspireProject" | Out-Null
     $Process.WaitForExit()
 }
 
@@ -149,14 +147,14 @@ $AspireServiceDefaultsFolder = "$AspireProjectFolder\$AspireProject.ServiceDefau
 
 Set-Location $AspireServiceDefaultsFolder
 
-$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "build"
+$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "build" | Out-Null
 $Process.WaitForExit()
 
 # Create Packages and Containers Project based on white-label.packagesandcontainers
 
 Set-Location $ProjectFolder
 
-$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "new", "whitelabel-packages-and-containers", "-o $ProjectName.PackagesAndContainers"
+$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "new", "whitelabel-packages-and-containers", "-o $ProjectName.PackagesAndContainers"  | Out-Null
 $Process.WaitForExit()
 
 $ProjectPackagesAndContainersFolder = "$ProjectFolder\$ProjectName.PackagesAndContainers"
@@ -167,7 +165,7 @@ $ContainerRegistryPort = Get-InactiveTcpPort 10000 50000
 $ContainerRegistryUserInterfacePort = Get-InactiveTcpPort 10000 50000
 $PackageSourcePort = Get-InactiveTcpPort 10000 50000
 
-$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "run", $ProjectName, $ContainerRegistryPort, $ContainerRegistryUserInterfacePort, $PackageSourcePort
+$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "run", $ProjectName, $ContainerRegistryPort, $ContainerRegistryUserInterfacePort, $PackageSourcePort  | Out-Null
 $Process.WaitForExit()
 
 # Create Sub-Projects Folder (A folder into which you can place all your supporting code, Service Solutions, Templates, Project bound for Nuget etc)
@@ -190,7 +188,7 @@ $DemoProjectName = "$ProjectName.Sample.Demo";
 
 $DemoProjectFolder = "$SubProjectsFolder\$DemoProjectName"
 
-$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "new", "whitelabel-service", "-o $DemoProjectName"
+$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "new", "whitelabel-service", "-o $DemoProjectName"  | Out-Null
 $Process.WaitForExit()
 
 $DemoUserInterfaceProjectFolder = "$DemoProjectFolder\src\Application\UserInterface\$DemoProjectName.UserInterface\"
@@ -203,7 +201,7 @@ $SharedKernelProjectName = "$ProjectName.SharedKernel";
 
 $SharedKernelProjectFolder = "$SubProjectsFolder\$SharedKernelProjectName"
 
-$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "new", "whitelabel-sharedkernel", "-o $SharedKernelProjectName"
+$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "new", "whitelabel-sharedkernel", "-o $SharedKernelProjectName" 
 $Process.WaitForExit()
 
 # Copy Nuget File to Folders Where Needed 
@@ -234,7 +232,40 @@ $Process.WaitForExit()
 $Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "nuget", "push", "./nupkgs/$SharedKernelProjectName.1.0.0.nupkg", "-s http://localhost:$PackageSourcePort/v3/index.json", "-k 8B516EDB-7523-476E-AF43-79CCA054CE9F"
 $Process.WaitForExit()
 
-# Write Output to Console
+# Save Config, Give Intructions to User and start Demo Project Creation.
+Set-Location $ProjectFolder
+
+$projectConfig = Get-Variable 
+$projectConfig.ProjectName = "$ProjectName"
+$projectConfig.DotNetExecutablePath = "$DotNetExecutablePath"
+$projectConfig.GitExecutablePath = "$GitExecutablePath"
+$projectConfig.WhiteLabelCommonProjectsFolder = "$WhiteLabelCommonProjectsFolder"
+$projectConfig.ServiceMetaProjectFolder = "$ServiceMetaProjectFolder"
+$projectConfig.PackagesAndContainersProjectFolder = "$PackagesAndContainersProjectFolder"
+$projectConfig.SharedKernelTemplateProjectFolder = "$SharedKernelProjectFolder"
+$projectConfig.ProjectFolder = "$ProjectFolder"
+$projectConfig.AspireProject = "$AspireProject"
+$projectConfig.AspireProjectFolder = "$AspireProjectFolder"
+$projectConfig.AspireServiceDefaultsFolder = "$AspireServiceDefaultsFolder"
+$projectConfig.AspireServiceDefaultsFolder = "$AspireServiceDefaultsFolder"
+$projectConfig.ProjectPackagesAndContainersFolder = "$ProjectPackagesAndContainersFolder"
+$projectConfig.ContainerRegistryPort = "$ContainerRegistryPort"
+$projectConfig.ContainerRegistryUserInterfacePort = "$ContainerRegistryUserInterfacePort"
+$projectConfig.PackageSourcePort = "$PackageSourcePort"
+$projectConfig.SubProjectsFolder = "$SubProjectsFolder"
+$projectConfig.DemoProjectName = "$DemoProjectName"
+$projectConfig.DemoProjectFolder = "$DemoProjectName"
+$projectConfig.DemoUserInterfaceProjectFolder = "$DemoUserInterfaceProjectFolder"
+$projectConfig.SharedKernelProjectName = "$SharedKernelProjectName"
+$projectConfig.SharedKernelProjectFolder = "$SharedKernelProjectFolder"
+$projectConfig.NugetConfigFilePath = "$NugetConfigFilePath"
+
+$projectConfigJson = $projectConfig | ConvertTo-Json
+
+New-Item $projectConfigFileFullPath
+Set-Content $projectConfigJson 
+
+$projectConfigFileFullPath = "$DemoProjectFolder\$ProjectName.config.json"
 
 $ReadMe = @"
 # Development Environment Information 
@@ -244,6 +275,22 @@ The following docker containers have been setup for this project: "
 - Container Registry: http://localhost:$ContainerRegistryPort"
 - Container Registry UI: http://localhost:$ContainerRegistryUserInterfacePort"
 - Package Source UI: http://localhost:$PackageSourcePort"
+
+## Configuration Information 
+
+The config file for this Cloud Native Applcation can be found here:
+
+```
+$projectConfigFileFullPath
+````
+
+The config file for the Demo Project can be found here:
+
+```
+$demoConfigFileFullPath
+````
+
+## Add additional Projects/Services
 
 To add a new HostedProject (Service) first create the Project using the following command:
 
@@ -261,15 +308,27 @@ Example (Change values as required):
 
 "@
 
-Set-Location $ProjectFolder 
-
 New-Item -Path ".\README.md" -ItemType File
 Set-Content -Path ".\README.md" $ReadMe
 
-# Put User in Correct Folder to Run Demo Setup Script
-
 Set-Location $DemoProjectFolder
 
+$demoProjectConfig = Get-Variable 
+$demoProjectConfig.projectNameBase = "$ProjectName"
+$demoProjectConfig.aspireProjectName = "$AspireProject"
+$demoProjectConfig.aspireSolutionFolder = "$AspireProjectFolder"
+$demoProjectConfig.serviceDefaultsPackage = "$ProjectName.Aspire.ServiceDefaults"
+$demoProjectConfig.packagesAndContainersSolutionFolder = "$ProjectPackagesAndContainersFolder"
+$demoConfigJson = $demoProjectConfig | ConvertTo-Json
+
+New-Item $demoConfigFileFullPath
+Set-Content $demoConfigJson 
+
+# Put User in Correct Folder to Run Demo Setup Script
+
+& .\RUNME.ps1 -projectNameBase "$ProjectName" -aspireProjectName "$AspireProject" -aspireSolutionFolder "$AspireProjectFolder" -serviceDefaultsPackage "$ProjectName.Aspire.ServiceDefaults" -packagesAndContainersSolutionFolder "$ProjectPackagesAndContainersFolder"`
+
+<#
 Write-Host @"
 
 *****************************************************************************
@@ -281,3 +340,4 @@ Please run the following command to reference the Demo Project from Aspire:"
 *****************************************************************************
 
 "@
+#>
