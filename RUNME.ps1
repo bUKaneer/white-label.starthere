@@ -266,7 +266,7 @@ $demoProjectConfig = [pscustomobject]@{
 $projectConfigJson = $projectConfig | ConvertTo-Json
 
 New-Item -Path $projectConfigFileFullPath -ItemType File
-Set-Content $projectConfigJson 
+Set-Content -Path $projectConfigFileFullPath $projectConfigJson
 
 $ReadMe = @"
 # Development Environment Information 
@@ -327,7 +327,7 @@ $demoProjectConfig = [pscustomobject]@{
 $demoConfigJson = $demoProjectConfig | ConvertTo-Json
 
 New-Item -Path $demoConfigFileFullPath -ItemType File
-Set-Content $demoConfigJson 
+Set-Content -Path $demoConfigFileFullPath $demoConfigJson
 
 # Put User in Correct Folder to Run Demo Setup Script
 
