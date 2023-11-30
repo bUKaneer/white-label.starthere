@@ -207,6 +207,8 @@ $Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentL
 $Process.WaitForExit()
 
 # Copy Nuget File to Folders Where Needed 
+$ConfigurationFolder = "$ProjectFolder\Configuration"
+New-Item -Path $ConfigurationFolder -ItemType Directory
 
 $NugetConfigFilePath = "$ProjectPackagesAndContainersFolder\nuget.config"
 $PortsConfigFilePath = "$ProjectPackagesAndContainersFolder\ports.config.json"
@@ -239,9 +241,6 @@ $Process.WaitForExit()
 
 # Save Config, Give Intructions to User and start Demo Project Creation.
 Set-Location $ProjectFolder
-
-$ConfigurationFolder = "$ProjectFolder\Configuration"
-New-Item -Path $ConfigurationFolder -ItemType Directory
 
 $ProjectConfigFileFullPath = "$ConfigurationFolder\$ProjectName.config.json"
 $DemoProjectConfigFileFullPath = "$ConfigurationFolder\$DemoProjectName.config.json"
