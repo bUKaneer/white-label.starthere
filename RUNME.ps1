@@ -235,6 +235,8 @@ $Process.WaitForExit()
 # Save Config, Give Intructions to User and start Demo Project Creation.
 Set-Location $ProjectFolder
 
+$projectConfigFileFullPath = "$DemoProjectFolder\$ProjectName.setup.config.json"
+
 $demoProjectConfig = [pscustomobject]@{
     ProjectName                        = "$ProjectName"
     DotNetExecutablePath               = "$DotNetExecutablePath"
@@ -258,14 +260,13 @@ $demoProjectConfig = [pscustomobject]@{
     SharedKernelProjectName            = "$SharedKernelProjectName"
     SharedKernelProjectFolder          = "$SharedKernelProjectFolder"
     NugetConfigFilePath                = "$NugetConfigFilePath"
+    projectConfigFileFullPath          = "$projectConfigFileFullPath"
 }
 
 $projectConfigJson = $projectConfig | ConvertTo-Json
 
-New-Item $projectConfigFileFullPath
+New-Item -Path $projectConfigFileFullPath -ItemType File
 Set-Content $projectConfigJson 
-
-$projectConfigFileFullPath = "$DemoProjectFolder\$ProjectName.config.json"
 
 $ReadMe = @"
 # Development Environment Information 
@@ -311,8 +312,9 @@ Example (Change values as required):
 New-Item -Path ".\README.md" -ItemType File
 Set-Content -Path ".\README.md" $ReadMe
 
-Set-Location $DemoProjectFolder
+# Create Demo Project Config File
 
+Set-Location $DemoProjectFolder
 
 $demoProjectConfig = [pscustomobject]@{
     projectNameBase                     = "$ProjectName"
@@ -324,23 +326,9 @@ $demoProjectConfig = [pscustomobject]@{
 
 $demoConfigJson = $demoProjectConfig | ConvertTo-Json
 
-New-Item $demoConfigFileFullPath
+New-Item -Path $demoConfigFileFullPath -ItemType File
 Set-Content $demoConfigJson 
 
 # Put User in Correct Folder to Run Demo Setup Script
 
 & .\RUNME.ps1 -projectNameBase "$ProjectName" -aspireProjectName "$AspireProject" -aspireSolutionFolder "$AspireProjectFolder" -serviceDefaultsPackage "$ProjectName.Aspire.ServiceDefaults" -packagesAndContainersSolutionFolder "$ProjectPackagesAndContainersFolder"`
-
-<#
-Write-Host @"
-
-*****************************************************************************
-
-Please run the following command to reference the Demo Project from Aspire:"
-
-`.\RUNME.ps1 -projectNameBase "$ProjectName" -aspireProjectName "$AspireProject" -aspireSolutionFolder "$AspireProjectFolder" -serviceDefaultsPackage `"$ProjectName.Aspire.ServiceDefaults`" -packagesAndContainersSolutionFolder "$ProjectPackagesAndContainersFolder"`
-
-*****************************************************************************
-
-"@
-#>
