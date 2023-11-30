@@ -137,7 +137,7 @@ $AspireProject = "$ProjectName.Aspire"
 $AspireProjectFolder = "$ProjectFolder\$AspireProject"
 
 if (!(Test-Path $AspireProjectFolder)) {
-    $Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "new", "aspire", "-o $AspireProject" | Out-Null
+    $Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "new", "aspire", "-o $AspireProject" 
     $Process.WaitForExit()
 }
 
@@ -147,14 +147,14 @@ $AspireServiceDefaultsFolder = "$AspireProjectFolder\$AspireProject.ServiceDefau
 
 Set-Location $AspireServiceDefaultsFolder
 
-$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "build" | Out-Null
+$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "build" 
 $Process.WaitForExit()
 
 # Create Packages and Containers Project based on white-label.packagesandcontainers
 
 Set-Location $ProjectFolder
 
-$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "new", "whitelabel-packages-and-containers", "-o $ProjectName.PackagesAndContainers"  | Out-Null
+$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "new", "whitelabel-packages-and-containers", "-o $ProjectName.PackagesAndContainers"  
 $Process.WaitForExit()
 
 $ProjectPackagesAndContainersFolder = "$ProjectFolder\$ProjectName.PackagesAndContainers"
@@ -165,7 +165,7 @@ $ContainerRegistryPort = Get-InactiveTcpPort 10000 50000
 $ContainerRegistryUserInterfacePort = Get-InactiveTcpPort 10000 50000
 $PackageSourcePort = Get-InactiveTcpPort 10000 50000
 
-$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "run", $ProjectName, $ContainerRegistryPort, $ContainerRegistryUserInterfacePort, $PackageSourcePort  | Out-Null
+$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "run", $ProjectName, $ContainerRegistryPort, $ContainerRegistryUserInterfacePort, $PackageSourcePort  
 $Process.WaitForExit()
 
 # Create Sub-Projects Folder (A folder into which you can place all your supporting code, Service Solutions, Templates, Project bound for Nuget etc)
@@ -188,7 +188,7 @@ $DemoProjectName = "$ProjectName.Sample.Demo";
 
 $DemoProjectFolder = "$SubProjectsFolder\$DemoProjectName"
 
-$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "new", "whitelabel-service", "-o $DemoProjectName"  | Out-Null
+$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "new", "whitelabel-service", "-o $DemoProjectName"  
 $Process.WaitForExit()
 
 $DemoUserInterfaceProjectFolder = "$DemoProjectFolder\src\Application\UserInterface\$DemoProjectName.UserInterface\"
