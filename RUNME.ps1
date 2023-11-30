@@ -237,7 +237,7 @@ Set-Location $ProjectFolder
 
 $projectConfigFileFullPath = "$DemoProjectFolder\$ProjectName.setup.config.json"
 
-$demoProjectConfig = [pscustomobject]@{
+$projectProjectConfig = [pscustomobject]@{
     ProjectName                        = "$ProjectName"
     DotNetExecutablePath               = "$DotNetExecutablePath"
     GitExecutablePath                  = "$GitExecutablePath"
@@ -263,10 +263,10 @@ $demoProjectConfig = [pscustomobject]@{
     projectConfigFileFullPath          = "$projectConfigFileFullPath"
 }
 
-$projectConfigJson = $projectConfig | ConvertTo-Json
+$projectConfigJson = $projectProjectConfig | ConvertTo-Json 
 
-New-Item -Path $projectConfigFileFullPath -ItemType File
-Set-Content -Path $projectConfigFileFullPath $projectConfigJson
+New-Item -Path "$projectConfigFileFullPath" -ItemType File
+Set-Content -Path "$projectConfigFileFullPath" $projectConfigJson
 
 $ReadMe = @"
 # Development Environment Information 
@@ -281,15 +281,11 @@ The following docker containers have been setup for this project: "
 
 The config file for this Cloud Native Applcation can be found here:
 
-```
-$projectConfigFileFullPath
-````
+``$projectConfigFileFullPath``
 
 The config file for the Demo Project can be found here:
 
-```
-$demoConfigFileFullPath
-````
+``$demoConfigFileFullPath``
 
 ## Add additional Projects/Services
 
@@ -326,8 +322,8 @@ $demoProjectConfig = [pscustomobject]@{
 
 $demoConfigJson = $demoProjectConfig | ConvertTo-Json
 
-New-Item -Path $demoConfigFileFullPath -ItemType File
-Set-Content -Path $demoConfigFileFullPath $demoConfigJson
+New-Item -Path "$demoConfigFileFullPath" -ItemType File
+Set-Content -Path "$demoConfigFileFullPath" $demoConfigJson
 
 # Put User in Correct Folder to Run Demo Setup Script
 
