@@ -86,7 +86,7 @@ if (!(Test-Path $ServiceMetaProjectFolder)) {
 
 Set-Location $ServiceMetaProjectFolder
 
-$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "new", "install .\", "--force"
+$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "new", "install .\", ""
 $Process.WaitForExit()
 
 # Add Packages and Containers Project
@@ -102,7 +102,7 @@ if (!(Test-Path $PackagesAndContainersProjectFolder)) {
 
 Set-Location $PackagesAndContainersProjectFolder
 
-$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "new", "install .\", "--force"
+$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "new", "install .\", ""
 $Process.WaitForExit()
 
 # Add Shared Kernel Template
@@ -117,7 +117,7 @@ if (!(Test-Path $SharedKernelTemplateProjectFolder)) {
 
 Set-Location $SharedKernelTemplateProjectFolder
 
-$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "new", "install .\", "--force"
+$Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "new", "install .\", ""
 $Process.WaitForExit()
 
 # Create Aspire.HostedProjects Project Folder
