@@ -344,9 +344,11 @@ $demoConfigJson = $demoProjectConfig | ConvertTo-Json
 New-Item -Path "$demoProjectConfigFileFullPath" -ItemType File
 Set-Content -Path "$demoProjectConfigFileFullPath" $demoConfigJson
 
-# Put User in Correct Folder to Run Demo Setup Script
+# Put User in Correct Folder and Run Demo Setup Script
 
 Set-Location $DemoProjectFolder
+
+& .\RUNME.ps1 -projectNameBase "$ProjectName" -aspireProjectName "$AspireProject" -aspireSolutionFolder "$AspireProjectFolder" -serviceDefaultsPackage "$ProjectName.Aspire.ServiceDefaults" -packagesAndContainersSolutionFolder "$ProjectPackagesAndContainersFolder"`
 
 <#
 
