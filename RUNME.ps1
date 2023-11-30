@@ -240,10 +240,11 @@ $Process.WaitForExit()
 # Save Config, Give Intructions to User and start Demo Project Creation.
 Set-Location $ProjectFolder
 
+$ConfigurationFolder = "$ProjectFolder\Configuration"
+New-Item -Path $ConfigurationFolder -ItemType Directory
+
 $ProjectConfigFileFullPath = "$ConfigurationFolder\$ProjectName.config.json"
 $DemoProjectConfigFileFullPath = "$ConfigurationFolder\$DemoProjectName.config.json"
-
-$ConfigurationFolder = "$ProjectFolder\Configuration"
 
 $ProjectProjectConfig = [pscustomobject]@{
     ProjectName                        = "$ProjectName"
@@ -291,11 +292,11 @@ The following docker containers have been setup for this project: "
 
 The config file for this Cloud Native Applcation can be found here:
 
-``$ProjectConfigFileFullPath``
+`$ProjectConfigFileFullPath`
 
 The Configuration folder holds all values used in project initialisation.
 
-``$DemoProjectConfigFileFullPath``
+`$DemoProjectConfigFileFullPath`
 
 The $ProjectPackagesAndContainers solution has within it a special `posts.config.json` 
 which has been copied here. This is used during initialisation to manage the dynamic ports for the nuget.config file which has 

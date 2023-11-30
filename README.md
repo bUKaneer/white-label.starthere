@@ -8,12 +8,11 @@ To use the White Label eco-system you will need the following software installed
 
 - [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download)
 - [Docker](https://docs.docker.com/get-docker/)
-- Aspire Workload 
+- Aspire Workload
   - `dotnet workload update`
   - `dotnet workload install aspire`
 - [Powershell](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.3)
 - [Git](https://git-scm.com/downloads)
-
 
 ## Get Started
 
@@ -30,8 +29,8 @@ To use the White Label eco-system you will need the following software installed
 It tries to solve the following problems.
 
 - Q: Where should I store my App Hosted Projects and Solutions?
-  - A: The White Label system is a collection of `dotnet new` templates and `PowerShell` scripts so you can store them any way you prefer with a little 
-  tinkering. However a sensible default Solution/Project layout has been chosen to 
+  - A: The White Label system is a collection of `dotnet new` templates and `PowerShell` scripts so you can store them any way you prefer with a little
+  tinkering. However a sensible default Solution/Project layout has been chosen to
   all maximum flexibility regards source control.
 - Q: How should I deal with source control?
   - A: The default solution/project layout allows for multiple "levels" of git.
@@ -62,4 +61,3 @@ I built this project to get more familiar with the technologies and techniques t
 Additionally I wanted to get really good with cloud native approachs whilst using clean architecture. Finally I really wanted to be able to create and destroy distributed systems at will so that I could quickly spin up an environment so that I could spend more time experimenting and less time creating an environment in which to experiment.
 
 I learnt so much from this project and look forward to hearing your feedback on where it should go next.
-
