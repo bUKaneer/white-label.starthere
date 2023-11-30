@@ -157,7 +157,9 @@ Set-Location $ProjectFolder
 $Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "new", "whitelabel-packages-and-containers", "-o $ProjectName.PackagesAndContainers"  
 $Process.WaitForExit()
 
-$ProjectPackagesAndContainersFolder = "$ProjectFolder\$ProjectName.PackagesAndContainers"
+$ProjectPackagesAndContainers = "$ProjectName.PackagesAndContainers"
+
+$ProjectPackagesAndContainersFolder = "$ProjectFolder\$ProjectPackagesAndContainers"
 
 Set-Location $ProjectPackagesAndContainersFolder
 
@@ -207,7 +209,10 @@ $Process.WaitForExit()
 # Copy Nuget File to Folders Where Needed 
 
 $NugetConfigFilePath = "$ProjectPackagesAndContainersFolder\nuget.config"
+$PortsConfigFilePath = "$ProjectPackagesAndContainersFolder\ports.config.json"
 
+Copy-Item -Path $PortsConfigFilePath -Destination "$ConfigurationFolder"
+Copy-Item -Path $NugetConfigFilePath -Destination "$ConfigurationFolder"
 Copy-Item -Path $NugetConfigFilePath -Destination "$DemoUserInterfaceProjectFolder"
 Copy-Item -Path $NugetConfigFilePath -Destination "$DemoProjectFolder\src\Application\$DemoProjectName.WebApi\"
 Copy-Item -Path $NugetConfigFilePath -Destination "$AspireProjectFolder\$ProjectName.Aspire.AppHost\"
@@ -235,8 +240,10 @@ $Process.WaitForExit()
 # Save Config, Give Intructions to User and start Demo Project Creation.
 Set-Location $ProjectFolder
 
-$ProjectConfigFileFullPath = "$ProjectFolder\$ProjectName.setup.config.json"
-$DemoProjectConfigFileFullPath = "$DemoProjectFolder\$ProjectName.config.json"
+$ProjectConfigFileFullPath = "$ConfigurationFolder\$ProjectName.config.json"
+$DemoProjectConfigFileFullPath = "$ConfigurationFolder\$DemoProjectName.config.json"
+
+$ConfigurationFolder = "$ProjectFolder\Configuration"
 
 $ProjectProjectConfig = [pscustomobject]@{
     ProjectName                        = "$ProjectName"
@@ -263,6 +270,7 @@ $ProjectProjectConfig = [pscustomobject]@{
     NugetConfigFilePath                = "$NugetConfigFilePath"
     ProjectConfigFileFullPath          = "$ProjectConfigFileFullPath"
     DemoProjectConfigFileFullPath      = "$DemoProjectConfigFileFullPath"
+    ProjectPackagesAndContainers       = "$ProjectPackagesAndContainers"
 }
 
 $ProjectConfigJson = $ProjectProjectConfig | ConvertTo-Json 
@@ -285,9 +293,16 @@ The config file for this Cloud Native Applcation can be found here:
 
 ``$ProjectConfigFileFullPath``
 
-The config file for the Demo Project can be found here:
+The Configuration folder holds all values used in project initialisation.
 
 ``$DemoProjectConfigFileFullPath``
+
+The $ProjectPackagesAndContainers solution has within it a special `posts.config.json` 
+which has been copied here. This is used during initialisation to manage the dynamic ports for the nuget.config file which has 
+also been copied here
+
+The nuget file can be placed into new project you generate so that they can access the local 
+package source.
 
 ## Aspire AppHost Wire-up 
 
@@ -331,7 +346,7 @@ Set-Content -Path ".\README.md" $ReadMe
 
 Set-Location $DemoProjectFolder
 
-$demoProjectConfig = [pscustomobject]@{
+$DemoProjectConfig = [pscustomobject]@{
     projectNameBase                     = "$ProjectName"
     aspireProjectName                   = "$AspireProject"
     aspireSolutionFolder                = "$AspireProjectFolder"
@@ -339,10 +354,10 @@ $demoProjectConfig = [pscustomobject]@{
     packagesAndContainersSolutionFolder = "$ProjectPackagesAndContainersFolder"
 }
 
-$demoConfigJson = $demoProjectConfig | ConvertTo-Json
+$DemoConfigJson = $DemoProjectConfig | ConvertTo-Json
 
 New-Item -Path "$DemoProjectConfigFileFullPath" -ItemType File
-Set-Content -Path "$DemoProjectConfigFileFullPath" $demoConfigJson
+Set-Content -Path "$DemoProjectConfigFileFullPath" $DemoConfigJson
 
 # Put User in Correct Folder and Run Demo Setup Script
 
