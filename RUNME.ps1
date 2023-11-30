@@ -235,30 +235,30 @@ $Process.WaitForExit()
 # Save Config, Give Intructions to User and start Demo Project Creation.
 Set-Location $ProjectFolder
 
-$projectConfig = Get-Variable 
-$projectConfig.ProjectName = "$ProjectName"
-$projectConfig.DotNetExecutablePath = "$DotNetExecutablePath"
-$projectConfig.GitExecutablePath = "$GitExecutablePath"
-$projectConfig.WhiteLabelCommonProjectsFolder = "$WhiteLabelCommonProjectsFolder"
-$projectConfig.ServiceMetaProjectFolder = "$ServiceMetaProjectFolder"
-$projectConfig.PackagesAndContainersProjectFolder = "$PackagesAndContainersProjectFolder"
-$projectConfig.SharedKernelTemplateProjectFolder = "$SharedKernelProjectFolder"
-$projectConfig.ProjectFolder = "$ProjectFolder"
-$projectConfig.AspireProject = "$AspireProject"
-$projectConfig.AspireProjectFolder = "$AspireProjectFolder"
-$projectConfig.AspireServiceDefaultsFolder = "$AspireServiceDefaultsFolder"
-$projectConfig.AspireServiceDefaultsFolder = "$AspireServiceDefaultsFolder"
-$projectConfig.ProjectPackagesAndContainersFolder = "$ProjectPackagesAndContainersFolder"
-$projectConfig.ContainerRegistryPort = "$ContainerRegistryPort"
-$projectConfig.ContainerRegistryUserInterfacePort = "$ContainerRegistryUserInterfacePort"
-$projectConfig.PackageSourcePort = "$PackageSourcePort"
-$projectConfig.SubProjectsFolder = "$SubProjectsFolder"
-$projectConfig.DemoProjectName = "$DemoProjectName"
-$projectConfig.DemoProjectFolder = "$DemoProjectName"
-$projectConfig.DemoUserInterfaceProjectFolder = "$DemoUserInterfaceProjectFolder"
-$projectConfig.SharedKernelProjectName = "$SharedKernelProjectName"
-$projectConfig.SharedKernelProjectFolder = "$SharedKernelProjectFolder"
-$projectConfig.NugetConfigFilePath = "$NugetConfigFilePath"
+$demoProjectConfig = [pscustomobject]@{
+    ProjectName                        = "$ProjectName"
+    DotNetExecutablePath               = "$DotNetExecutablePath"
+    GitExecutablePath                  = "$GitExecutablePath"
+    WhiteLabelCommonProjectsFolder     = "$WhiteLabelCommonProjectsFolder"
+    ServiceMetaProjectFolder           = "$ServiceMetaProjectFolder"
+    PackagesAndContainersProjectFolder = "$PackagesAndContainersProjectFolder"
+    SharedKernelTemplateProjectFolder  = "$SharedKernelProjectFolder"
+    ProjectFolder                      = "$ProjectFolder"
+    AspireProject                      = "$AspireProject"
+    AspireProjectFolder                = "$AspireProjectFolder"
+    AspireServiceDefaultsFolder        = "$AspireServiceDefaultsFolder"
+    ProjectPackagesAndContainersFolder = "$ProjectPackagesAndContainersFolder"
+    ContainerRegistryPort              = "$ContainerRegistryPort"
+    ContainerRegistryUserInterfacePort = "$ContainerRegistryUserInterfacePort"
+    PackageSourcePort                  = "$PackageSourcePort"
+    SubProjectsFolder                  = "$SubProjectsFolder"
+    DemoProjectName                    = "$DemoProjectName"
+    DemoProjectFolder                  = "$DemoProjectName"
+    DemoUserInterfaceProjectFolder     = "$DemoUserInterfaceProjectFolder"
+    SharedKernelProjectName            = "$SharedKernelProjectName"
+    SharedKernelProjectFolder          = "$SharedKernelProjectFolder"
+    NugetConfigFilePath                = "$NugetConfigFilePath"
+}
 
 $projectConfigJson = $projectConfig | ConvertTo-Json
 
@@ -313,12 +313,15 @@ Set-Content -Path ".\README.md" $ReadMe
 
 Set-Location $DemoProjectFolder
 
-$demoProjectConfig = Get-Variable 
-$demoProjectConfig.projectNameBase = "$ProjectName"
-$demoProjectConfig.aspireProjectName = "$AspireProject"
-$demoProjectConfig.aspireSolutionFolder = "$AspireProjectFolder"
-$demoProjectConfig.serviceDefaultsPackage = "$ProjectName.Aspire.ServiceDefaults"
-$demoProjectConfig.packagesAndContainersSolutionFolder = "$ProjectPackagesAndContainersFolder"
+
+$demoProjectConfig = [pscustomobject]@{
+    projectNameBase                     = "$ProjectName"
+    aspireProjectName                   = "$AspireProject"
+    aspireSolutionFolder                = "$AspireProjectFolder"
+    serviceDefaultsPackage              = "$ProjectName.Aspire.ServiceDefaults"
+    packagesAndContainersSolutionFolder = "$ProjectPackagesAndContainersFolder"
+}
+
 $demoConfigJson = $demoProjectConfig | ConvertTo-Json
 
 New-Item $demoConfigFileFullPath
