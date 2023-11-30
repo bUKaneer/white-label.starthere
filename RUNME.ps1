@@ -235,7 +235,8 @@ $Process.WaitForExit()
 # Save Config, Give Intructions to User and start Demo Project Creation.
 Set-Location $ProjectFolder
 
-$projectConfigFileFullPath = "$DemoProjectFolder\$ProjectName.setup.config.json"
+$projectConfigFileFullPath = "$ProjectFolder\$ProjectName.setup.config.json"
+$demoProjectConfigFileFullPath = "$DemoProjectFolder\$ProjectName.config.json"
 
 $projectProjectConfig = [pscustomobject]@{
     ProjectName                        = "$ProjectName"
@@ -261,6 +262,7 @@ $projectProjectConfig = [pscustomobject]@{
     SharedKernelProjectFolder          = "$SharedKernelProjectFolder"
     NugetConfigFilePath                = "$NugetConfigFilePath"
     projectConfigFileFullPath          = "$projectConfigFileFullPath"
+    demoProjectConfigFileFullPath      = "$demoProjectConfigFileFullPath"
 }
 
 $projectConfigJson = $projectProjectConfig | ConvertTo-Json 
@@ -285,7 +287,24 @@ The config file for this Cloud Native Applcation can be found here:
 
 The config file for the Demo Project can be found here:
 
-``$demoConfigFileFullPath``
+``$demoProjectConfigFileFullPath``
+
+## Aspire AppHost Wire-up 
+
+Use the following to replace the content of Program.cs in Aspire.AppHost folder.
+
+```csharp
+var builder = DistributedApplication.CreateBuilder(args);
+
+var apiBackendForFrontEnd = builder.AddProject<Projects.WhiteLabel_Sample_Demo_WebApi>("website-api-backend-for-frontend")
+.WithLaunchProfile("https");
+
+var websiteFrontend = builder.AddProject<Projects.WhiteLabel_Sample_Demo_UserInterface>("website-frontend")
+.WithLaunchProfile("https")
+.WithReference(apiBackendForFrontEnd);
+
+builder.Build().Run();
+```
 
 ## Add additional Projects/Services
 
@@ -322,9 +341,23 @@ $demoProjectConfig = [pscustomobject]@{
 
 $demoConfigJson = $demoProjectConfig | ConvertTo-Json
 
-New-Item -Path "$demoConfigFileFullPath" -ItemType File
-Set-Content -Path "$demoConfigFileFullPath" $demoConfigJson
+New-Item -Path "$demoProjectConfigFileFullPath" -ItemType File
+Set-Content -Path "$demoProjectConfigFileFullPath" $demoConfigJson
 
 # Put User in Correct Folder to Run Demo Setup Script
 
-& .\RUNME.ps1 -projectNameBase "$ProjectName" -aspireProjectName "$AspireProject" -aspireSolutionFolder "$AspireProjectFolder" -serviceDefaultsPackage "$ProjectName.Aspire.ServiceDefaults" -packagesAndContainersSolutionFolder "$ProjectPackagesAndContainersFolder"`
+Set-Location $DemoProjectFolder
+
+<#
+
+# FOR DEBUGGING PURPOSES
+
+$key = Read-Host -Prompt "Setup $ProjectName Demo?"
+if ($key -eq "y" || $key -eq "y") {
+
+    & .\RUNME.ps1 -projectNameBase "$ProjectName" -aspireProjectName "$AspireProject" -aspireSolutionFolder "$AspireProjectFolder" -serviceDefaultsPackage "$ProjectName.Aspire.ServiceDefaults" -packagesAndContainersSolutionFolder "$ProjectPackagesAndContainersFolder"`
+
+} 
+
+exit 
+#>
