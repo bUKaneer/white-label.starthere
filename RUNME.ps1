@@ -235,10 +235,10 @@ $Process.WaitForExit()
 # Save Config, Give Intructions to User and start Demo Project Creation.
 Set-Location $ProjectFolder
 
-$projectConfigFileFullPath = "$ProjectFolder\$ProjectName.setup.config.json"
-$demoProjectConfigFileFullPath = "$DemoProjectFolder\$ProjectName.config.json"
+$ProjectConfigFileFullPath = "$ProjectFolder\$ProjectName.setup.config.json"
+$DemoProjectConfigFileFullPath = "$DemoProjectFolder\$ProjectName.config.json"
 
-$projectProjectConfig = [pscustomobject]@{
+$ProjectProjectConfig = [pscustomobject]@{
     ProjectName                        = "$ProjectName"
     DotNetExecutablePath               = "$DotNetExecutablePath"
     GitExecutablePath                  = "$GitExecutablePath"
@@ -261,14 +261,14 @@ $projectProjectConfig = [pscustomobject]@{
     SharedKernelProjectName            = "$SharedKernelProjectName"
     SharedKernelProjectFolder          = "$SharedKernelProjectFolder"
     NugetConfigFilePath                = "$NugetConfigFilePath"
-    projectConfigFileFullPath          = "$projectConfigFileFullPath"
-    demoProjectConfigFileFullPath      = "$demoProjectConfigFileFullPath"
+    ProjectConfigFileFullPath          = "$ProjectConfigFileFullPath"
+    DemoProjectConfigFileFullPath      = "$DemoProjectConfigFileFullPath"
 }
 
-$projectConfigJson = $projectProjectConfig | ConvertTo-Json 
+$ProjectConfigJson = $ProjectProjectConfig | ConvertTo-Json 
 
-New-Item -Path "$projectConfigFileFullPath" -ItemType File
-Set-Content -Path "$projectConfigFileFullPath" $projectConfigJson
+New-Item -Path "$ProjectConfigFileFullPath" -ItemType File
+Set-Content -Path "$ProjectConfigFileFullPath" $ProjectConfigJson
 
 $ReadMe = @"
 # Development Environment Information 
@@ -283,11 +283,11 @@ The following docker containers have been setup for this project: "
 
 The config file for this Cloud Native Applcation can be found here:
 
-``$projectConfigFileFullPath``
+``$ProjectConfigFileFullPath``
 
 The config file for the Demo Project can be found here:
 
-``$demoProjectConfigFileFullPath``
+``$DemoProjectConfigFileFullPath``
 
 ## Aspire AppHost Wire-up 
 
@@ -341,8 +341,8 @@ $demoProjectConfig = [pscustomobject]@{
 
 $demoConfigJson = $demoProjectConfig | ConvertTo-Json
 
-New-Item -Path "$demoProjectConfigFileFullPath" -ItemType File
-Set-Content -Path "$demoProjectConfigFileFullPath" $demoConfigJson
+New-Item -Path "$DemoProjectConfigFileFullPath" -ItemType File
+Set-Content -Path "$DemoProjectConfigFileFullPath" $demoConfigJson
 
 # Put User in Correct Folder and Run Demo Setup Script
 
