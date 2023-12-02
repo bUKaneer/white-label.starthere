@@ -186,14 +186,14 @@ if (!(Test-Path $SubProjectsFolder)) {
 
 Set-Location $SubProjectsFolder
 
-$DemoProjectName = "$ProjectName.Sample.Demo";
+$DemoProjectName = "$ProjectName.DemoService";
 
 $DemoProjectFolder = "$SubProjectsFolder\$DemoProjectName"
 
 $Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "new", "whitelabel-service", "-o $DemoProjectName"  
 $Process.WaitForExit()
 
-$DemoUserInterfaceProjectFolder = "$DemoProjectFolder\src\Application\UserInterface\$DemoProjectName.UserInterface\"
+$DemoUserInterfaceProjectFolder = "$DemoProjectFolder\src\Application\UI\$DemoProjectName.UI\"
 
 # Create Shared Kernel based on white-label.sharedkernel template
 
@@ -216,7 +216,7 @@ $PortsConfigFilePath = "$ProjectPackagesAndContainersFolder\ports.config.json"
 Copy-Item -Path $PortsConfigFilePath -Destination "$ConfigurationFolder"
 Copy-Item -Path $NugetConfigFilePath -Destination "$ConfigurationFolder"
 Copy-Item -Path $NugetConfigFilePath -Destination "$DemoUserInterfaceProjectFolder"
-Copy-Item -Path $NugetConfigFilePath -Destination "$DemoProjectFolder\src\Application\$DemoProjectName.WebApi\"
+Copy-Item -Path $NugetConfigFilePath -Destination "$DemoProjectFolder\src\App\$DemoProjectName.WebApi\"
 Copy-Item -Path $NugetConfigFilePath -Destination "$AspireProjectFolder\$ProjectName.Aspire.AppHost\"
 
 # Pack and Push Service Defaults Project to Baget
@@ -279,23 +279,23 @@ New-Item -Path "$ProjectConfigFileFullPath" -ItemType File
 Set-Content -Path "$ProjectConfigFileFullPath" $ProjectConfigJson
 
 $ReadMe = @"
-# Development Environment Information 
+# $ProjectName Distributed Development Environment Information 
 
-The following docker containers have been setup for this project: "
+The following docker containers have been setup for this project: 
 
-- Container Registry: http://localhost:$ContainerRegistryPort"
-- Container Registry UI: http://localhost:$ContainerRegistryUserInterfacePort"
-- Package Source UI: http://localhost:$PackageSourcePort"
+- Container Registry : http://localhost:$ContainerRegistryPort
+- [Container Registry UI](http://localhost:$ContainerRegistryUserInterfacePort): http://localhost:$ContainerRegistryUserInterfacePort
+- [Package Source UI](http://localhost:$PackageSourcePort): http://localhost:$PackageSourcePort
 
 ## Configuration Information 
 
 The config file for this Cloud Native Applcation can be found here:
 
-`$ProjectConfigFileFullPath`
+``$ProjectConfigFileFullPath``
 
 The Configuration folder holds all values used in project initialisation.
 
-`$DemoProjectConfigFileFullPath`
+``$DemoProjectConfigFileFullPath``
 
 The $ProjectPackagesAndContainers solution has within it a special `posts.config.json` 
 which has been copied here. This is used during initialisation to manage the dynamic ports for the nuget.config file which has 
@@ -308,7 +308,7 @@ package source.
 
 Use the following to replace the content of Program.cs in Aspire.AppHost folder.
 
-```csharp
+``````csharp
 var builder = DistributedApplication.CreateBuilder(args);
 
 var apiBackendForFrontEnd = builder.AddProject<Projects.WhiteLabel_Sample_Demo_WebApi>("website-api-backend-for-frontend")
@@ -319,7 +319,7 @@ var websiteFrontend = builder.AddProject<Projects.WhiteLabel_Sample_Demo_UserInt
 .WithReference(apiBackendForFrontEnd);
 
 builder.Build().Run();
-```
+``````
 
 ## Add additional Projects/Services
 
@@ -335,7 +335,7 @@ Then run the following command to reference the Demo Projects from Aspire:"
 
 Example (Change values as required):
 
-`.\RUNME.ps1 -projectNameBase "$projectName" -aspireProjectName "$AspireProject" -aspireSolutionFolder "$AspireProjectFolder" -serviceDefaultsPackage `"$ProjectName.Aspire.ServiceDefaults`" -packagesAndContainersSolutionFolder "$ProjectPackagesAndContainersFolder"`
+``.\RUNME.ps1 -projectNameBase "$projectName" -aspireProjectName "$AspireProject" -aspireSolutionFolder "$AspireProjectFolder" -serviceDefaultsPackage `"$ProjectName.Aspire.ServiceDefaults`" -packagesAndContainersSolutionFolder "$ProjectPackagesAndContainersFolder"``
 
 "@
 
