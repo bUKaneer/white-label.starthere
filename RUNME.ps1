@@ -193,7 +193,7 @@ $DemoProjectFolder = "$SubProjectsFolder\$DemoProjectName"
 $Process = Start-Process -NoNewWindow -PassThru $DotNetExecutablePath -ArgumentList "new", "whitelabel-service", "-o $DemoProjectName"  
 $Process.WaitForExit()
 
-$DemoUserInterfaceProjectFolder = "$DemoProjectFolder\src\Application\UI\$DemoProjectName.UI\"
+$DemoUserInterfaceProjectFolder = "$DemoProjectFolder\src\App\UI\$DemoProjectName.UI\"
 
 # Create Shared Kernel based on white-label.sharedkernel template
 
@@ -366,7 +366,6 @@ Set-Location $DemoProjectFolder
 & .\RUNME.ps1 -projectNameBase "$ProjectName" -aspireProjectName "$AspireProject" -aspireSolutionFolder "$AspireProjectFolder" -serviceDefaultsPackage "$ProjectName.Aspire.ServiceDefaults" -packagesAndContainersSolutionFolder "$ProjectPackagesAndContainersFolder"`
 
 <#
-
 # FOR DEBUGGING PURPOSES
 
 $key = Read-Host -Prompt "Setup $ProjectName Demo?"
