@@ -63,6 +63,10 @@ Clear-Host
 $DotNetExecutablePath = "C:\Program Files\dotnet\dotnet.exe"
 $GitExecutablePath = "C:\Program Files\Git\bin\git.exe"
 
+# Start Here Folder 
+
+$StartHereFolder = Get-Location
+
 # Move outside this folder and set as Start/Home folder.
 Set-Location "..\"
 
@@ -218,6 +222,10 @@ Copy-Item -Path $NugetConfigFilePath -Destination "$ConfigurationFolder"
 Copy-Item -Path $NugetConfigFilePath -Destination "$DemoUserInterfaceProjectFolder"
 Copy-Item -Path $NugetConfigFilePath -Destination "$DemoProjectFolder\src\App\$DemoProjectName.WebApi\"
 Copy-Item -Path $NugetConfigFilePath -Destination "$AspireProjectFolder\$ProjectName.Aspire.AppHost\"
+
+# Copy Publish All Containers and Push All Packages Helper Scripts
+Copy-Item -Path "$StartHereFolder\ProjectLevelHelperScripts\PublishAllContainers.ps1" -Destination "$ProjectFolder"
+Copy-Item -Path "$StartHereFolder\ProjectLevelHelperScripts\PushAllPackages.ps1" -Destination "$ProjectFolder"
 
 # Pack and Push Service Defaults Project to Baget
 
