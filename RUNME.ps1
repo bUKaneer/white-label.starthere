@@ -320,10 +320,10 @@ Use the following to replace the content of Program.cs in Aspire.AppHost folder.
 var builder = DistributedApplication.CreateBuilder(args);
 
 var apiBackendForFrontEnd = builder.AddProject<Projects.$($ProjectName)_Sample_Demo_WebApi>("api-backend-for-frontend")
-.WithLaunchProfile("https");
+.WithLaunchProfile("http");
 
 var frontend = builder.AddProject<Projects.$($ProjectName)_Sample_Demo_UserInterface>("ui-frontend")
-.WithLaunchProfile("https")
+.WithLaunchProfile("http")
 .WithReference(apiBackendForFrontEnd);
 
 builder.Build().Run();
