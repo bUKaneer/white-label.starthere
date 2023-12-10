@@ -1,4 +1,6 @@
-param([String]$n = "WhiteLabel")
+param(
+    [String]$n = "WhiteLabel",
+    [Boolean]$ApiOnly = 0)
 $ProjectName = $n
 
 #
@@ -343,8 +345,8 @@ Then run the following command to reference the Demo Projects from Aspire:"
 
 Example (Change values as required):
 
-``.\RUNME.ps1 -projectNameBase "$projectName" -aspireProjectName "$AspireProject" -aspireSolutionFolder "$AspireProjectFolder" -serviceDefaultsPackage `"$ProjectName.Aspire.ServiceDefaults`" -packagesAndContainersSolutionFolder "$ProjectPackagesAndContainersFolder"``
-
+``.\RUNME.ps1 -projectNameBase "$ProjectName" -aspireProjectName "$AspireProject" -aspireSolutionFolder "$AspireProjectFolder" -serviceDefaultsPackage "$ProjectName.Aspire.ServiceDefaults" -packagesAndContainersSolutionFolder "$ProjectPackagesAndContainersFolder"` -ApiOnly $ApiOnly``
+  
 "@
 
 New-Item -Path ".\README.md" -ItemType File
@@ -371,7 +373,7 @@ Set-Content -Path "$DemoProjectConfigFileFullPath" $DemoConfigJson
 
 Set-Location $DemoProjectFolder
 
-& .\RUNME.ps1 -projectNameBase "$ProjectName" -aspireProjectName "$AspireProject" -aspireSolutionFolder "$AspireProjectFolder" -serviceDefaultsPackage "$ProjectName.Aspire.ServiceDefaults" -packagesAndContainersSolutionFolder "$ProjectPackagesAndContainersFolder"` -ApiOnly 0 
+& .\RUNME.ps1 -projectNameBase "$ProjectName" -aspireProjectName "$AspireProject" -aspireSolutionFolder "$AspireProjectFolder" -serviceDefaultsPackage "$ProjectName.Aspire.ServiceDefaults" -packagesAndContainersSolutionFolder "$ProjectPackagesAndContainersFolder"` -ApiOnly $ApiOnly 
 
 <#
 # FOR DEBUGGING PURPOSES
