@@ -288,6 +288,9 @@ $ProjectConfigJson = $ProjectProjectConfig | ConvertTo-Json
 New-Item -Path "$ProjectConfigFileFullPath" -ItemType File
 Set-Content -Path "$ProjectConfigFileFullPath" $ProjectConfigJson
 
+
+$AspireProjectsCompatibleProjectName = $ProjectNames -replace '\.', '_'
+
 $ReadMe = @"
 # $ProjectName Distributed Development Environment Information 
 
@@ -321,10 +324,10 @@ Use the following to replace the content of Program.cs in Aspire.AppHost folder.
 ``````csharp
 var builder = DistributedApplication.CreateBuilder(args);
 
-var apiBackendForFrontEnd = builder.AddProject<Projects.$($ProjectName)_Sample_Demo_WebApi>("api-backend-for-frontend")
+var apiBackendForFrontEnd = builder.AddProject<Projects.$($AspireProjectsCompatibleProjectName)_Sample_Demo_WebApi>("api-backend-for-frontend")
 .WithLaunchProfile("http");
 
-var frontend = builder.AddProject<Projects.$($ProjectName)_Sample_Demo_UserInterface>("ui-frontend")
+var frontend = builder.AddProject<Projects.$($AspireProjectsCompatibleProjectName)_Sample_Demo_UserInterface>("ui-frontend")
 .WithLaunchProfile("http")
 .WithReference(apiBackendForFrontEnd);
 
