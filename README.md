@@ -76,7 +76,7 @@ The [Shared Kernel Project](https://github.com/bUKaneer/white-label.templates.Sh
 
 ### Samples
 
-Samples is the odd one out in this list. This project contains various implementations and demonstrations of the output of White Label Projects. Each folder contained within is a Project in its own right that can be spun up and referenced as required.
+The [Samples Project](https://github.com/bUKaneer/white-label.samples) is the odd one out in this list. This project contains various implementations and demonstrations of the output of White Label Projects. Each folder contained within is a Project in its own right that can be spun up and referenced as required.
 
 Each folder is an Experiment or Demonstration of a particular implementation detail.
 
