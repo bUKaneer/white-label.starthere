@@ -322,10 +322,10 @@ Use the following to replace the content of Program.cs in Aspire.AppHost folder.
 ``````csharp
 var builder = DistributedApplication.CreateBuilder(args);
 
-var bff = builder.AddProject(name: ""bff"", projectPath: ""/PATH.TO.WEBAPI/WEBAPI.csproj"")
+var bff = builder.AddProject(name: ""bff"", projectPath: @""/PATH.TO.WEBAPI/WEBAPI.csproj"")
 .WithLaunchProfile(""http"");
 
-var frontend = builder.AddProject(name: ""frontend"", projectPath: ""/PATH.TO.UI/UI.csproj"")
+var frontend = builder.AddProject(name: ""frontend"", projectPath: @""/PATH.TO.UI/UI.csproj"")
 .WithLaunchProfile(""http"")
 .WithReference(bff);
 
