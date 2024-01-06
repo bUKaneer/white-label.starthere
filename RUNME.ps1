@@ -192,7 +192,7 @@ if (!(Test-Path $SubProjectsFolder)) {
 
 Set-Location $SubProjectsFolder
 
-$DemoProjectName = "$ProjectName.DemoService";
+$DemoProjectName = "$ProjectName.UI";
 
 $DemoProjectFolder = "$SubProjectsFolder\$DemoProjectName"
 
@@ -205,7 +205,7 @@ $DemoUserInterfaceProjectFolder = "$DemoProjectFolder\src\App\UI\$DemoProjectNam
 
 Set-Location $SubProjectsFolder
 
-$SharedKernelProjectName = "$ProjectName.SharedKernel";
+$SharedKernelProjectName = "$ProjectName.Shared.Kernel";
 
 $SharedKernelProjectFolder = "$SubProjectsFolder\$SharedKernelProjectName"
 
@@ -288,9 +288,6 @@ $ProjectConfigJson = $ProjectProjectConfig | ConvertTo-Json
 New-Item -Path "$ProjectConfigFileFullPath" -ItemType File
 Set-Content -Path "$ProjectConfigFileFullPath" $ProjectConfigJson
 
-
-$AspireProjectsCompatibleProjectName = $ProjectNames -replace '\.', '_'
-
 $ReadMe = @"
 # $ProjectName Distributed Development Environment Information 
 
@@ -324,12 +321,12 @@ Use the following to replace the content of Program.cs in Aspire.AppHost folder.
 ``````csharp
 var builder = DistributedApplication.CreateBuilder(args);
 
-var apiBackendForFrontEnd = builder.AddProject<Projects.$($AspireProjectsCompatibleProjectName)_Sample_Demo_WebApi>("api-backend-for-frontend")
-.WithLaunchProfile("http");
+var bff = builder.AddProject(name: ""bff"", projectPath: projectPath: ""/PATH.TO.WEBAPI/WEBAPI.csproj"")
+.WithLaunchProfile(""http"");
 
-var frontend = builder.AddProject<Projects.$($AspireProjectsCompatibleProjectName)_Sample_Demo_UserInterface>("ui-frontend")
-.WithLaunchProfile("http")
-.WithReference(apiBackendForFrontEnd);
+var frontend = builder.AddProject(name: ""frontend"", projectPath: projectPath: ""/PATH.TO.UI/UI.csproj"")
+.WithLaunchProfile(""http"")
+.WithReference(bff);
 
 builder.Build().Run();
 ``````
