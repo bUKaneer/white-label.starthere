@@ -224,6 +224,7 @@ Copy-Item -Path $NugetConfigFilePath -Destination "$ConfigurationFolder"
 Copy-Item -Path $NugetConfigFilePath -Destination "$DemoUserInterfaceProjectFolder"
 Copy-Item -Path $NugetConfigFilePath -Destination "$DemoProjectFolder\src\App\$DemoProjectName.WebApi\"
 Copy-Item -Path $NugetConfigFilePath -Destination "$AspireProjectFolder\$ProjectName.Aspire.AppHost\"
+Copy-Item -Path $NugetConfigFilePath -Destination "$AspireServiceDefaultsFolder"
 
 # Copy Publish All Containers and Push All Packages Helper Scripts
 Copy-Item -Path "$StartHereFolder\ProjectLevelHelperScripts\PublishAllContainers.ps1" -Destination "$ProjectFolder"
